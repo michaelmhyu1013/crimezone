@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "846757638308",
+    "firebase_url": "https://crimezone-b0c85.firebaseio.com",
+    "project_id": "crimezone-b0c85",
+    "storage_bucket": "crimezone-b0c85.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:846757638308:android:855402723104fb72637631",
+        "android_client_info": {
+          "package_name": "info.michaelmhyu.crimezone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "846757638308-m1m09iqsrn1ta7rcdg8cnr30k3mltn2q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAf0roCIZiy2ZW4IDpr7cIgfNX4b683EHE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "846757638308-m1m09iqsrn1ta7rcdg8cnr30k3mltn2q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
