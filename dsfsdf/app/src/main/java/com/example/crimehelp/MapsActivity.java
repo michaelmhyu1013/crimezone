@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
@@ -13,6 +14,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.SearchView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -140,5 +142,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
         // [END read_message]
+    }
+
+    public void openSettingsActivity(View v) {
+        Intent openSettings = new Intent(this, SettingsActivity.class);
+        startActivity(openSettings);
     }
 }

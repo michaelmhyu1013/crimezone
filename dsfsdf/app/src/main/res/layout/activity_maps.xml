@@ -20,4 +20,15 @@
         android:layout_marginBottom="33dp"
         android:iconifiedByDefault="false" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:clickable="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="33dp"
+        android:onClick="openSettingsActivity"
+        map:srcCompat="@android:drawable/arrow_up_float" />
+
 </RelativeLayout>

@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">CrimeHelp</string>
     <string name="title_activity_maps">Map</string>
+    <string name="Settings">Settings</string>
+    <string name="alert_in_km">Radius of Alert in Kilometers</string>
+    <string name="vibration_alert">Enable Vibration Alert when entering area with high crime rate</string>
+    <string name="sound_alert">Enable Sound Alert when entering area with high crime rate</string>
 </resources>
