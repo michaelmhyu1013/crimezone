@@ -1,21 +1,20 @@
 package com.example.crimehelp;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -30,22 +29,32 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = "MainActivity";
 
     Location location;
     double longitude;
     double latitude;
     private GoogleMap mMap;
+    //private FirebaseDatabase crimeZoneDB;
+    DatabaseReference crimeEvents;
     SearchView searchView;
     SupportMapFragment mapFragment;
+    private List<CrimeEventMarker> crimeEventsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        crimeEvents = FirebaseDatabase.getInstance().getReference("crimeEvents2");
+        //crimeZoneDB = FirebaseDatabase.getInstance();
+        //crimeEvents = crimeZoneDB.getReference("crimeEvents");
+        crimeEventsList = new ArrayList<>();
+        // Obtain the crimeZoneDB
+        //basicReadWrite();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -57,19 +66,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 String location = searchView.getQuery().toString();
                 List<Address> addressList = null;
 
-                if (location != null || !location.equals("")) {
+                if (!location.equals("")) {
                     Geocoder geocoder = new Geocoder(MapsActivity.this);
                     try {
                         addressList = geocoder.getFromLocationName(location, 1);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                    if(addressList.size() < 1) {
+                        Toast.makeText(MapsActivity.this, "No search results.", Toast.LENGTH_LONG).show();
+                        return false;
+                    }
                     Address address = addressList.get(0);
                     LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
                     mMap.addMarker(new MarkerOptions().position(latLng).title(location));
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
                 }
-                return false;
+                return true;
             }
 
             @Override
@@ -115,24 +128,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(test));
     }
 
-    public void basicReadWrite() {
-        // [START write_message]
-        // Write a message to the database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("message");
-
-        myRef.setValue("Hello, World!");
-        // [END write_message]
-
-        // [START read_message]
-        // Read from the database
-        myRef.addValueEventListener(new ValueEventListener() {
+    @Override
+    protected void onStart() {
+        super.onStart();
+        crimeEvents.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                String value = dataSnapshot.getValue(String.class);
-                Log.d(TAG, "Value is: " + value);
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    CrimeEventMarker crimeEvent;
+                    if(snapshot.getValue() != null) {
+                        crimeEvent = snapshot.getValue(CrimeEventMarker.class);
+                        crimeEventsList.add(crimeEvent);
+                        Log.d(TAG, "Crime type is :" + crimeEvent.getTYPE());
+                        //CrimeEventMarker crimeEvent = dataSnapshot.getValue(CrimeEventMarker.class);
+                        LatLng marker = new LatLng(crimeEvent.getX(),crimeEvent.getY());
+                        mMap.addMarker(new MarkerOptions().position(marker));
+                        crimeEventsList.add(crimeEvent);
+                        Log.d(TAG, "Crime type is :" + crimeEvent.getTYPE());
+                    }
+                }
             }
 
             @Override
