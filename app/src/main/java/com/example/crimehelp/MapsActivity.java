@@ -141,7 +141,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         crimeEventsList.add(crimeEvent);
                         Log.d(TAG, "Crime type is :" + crimeEvent.getTYPE());
                         //CrimeEventMarker crimeEvent = dataSnapshot.getValue(CrimeEventMarker.class);
-                        LatLng marker = new LatLng(crimeEvent.getX(),crimeEvent.getY());
+                        UTM2Deg deg = new UTM2Deg(crimeEvent.getX(),crimeEvent.getY());
+                        LatLng marker = new LatLng(deg.getLatitude(),deg.getLongitude());
                         mMap.addMarker(new MarkerOptions().position(marker));
                         crimeEventsList.add(crimeEvent);
                         Log.d(TAG, "Crime type is :" + crimeEvent.getTYPE());
