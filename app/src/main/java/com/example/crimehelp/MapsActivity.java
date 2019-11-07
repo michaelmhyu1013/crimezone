@@ -83,8 +83,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.e("onSlide", "onSlide");
             }
         });
-        behavior.setPeekHeight(100);
 
+        behavior.setPeekHeight(200);
 
         searchView = findViewById(R.id.sv_location);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
