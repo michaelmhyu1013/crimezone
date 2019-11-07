@@ -16,10 +16,10 @@ public class CrimeEventListAdapter extends ArrayAdapter<CrimeEventMarker> {
     private Activity context;
     private List<CrimeEventMarker> crimeEventsList;
 
-    public CrimeEventListAdapter(Activity context, List<CrimeEventMarker> toDoListsList) {
-        super(context, R.layout.bottom_sheet_crime_list_layout, toDoListsList);
+    public CrimeEventListAdapter(Activity context, List<CrimeEventMarker> crimeEventsList) {
+        super(context, R.layout.bottom_sheet_crime_list_layout, crimeEventsList);
         this.context = context;
-        this.crimeEventsList = toDoListsList;
+        this.crimeEventsList = crimeEventsList;
     }
 
     public CrimeEventListAdapter(Context context, int resource, List<CrimeEventMarker> objects, Activity context1, List<CrimeEventMarker> crimeEventsList) {
