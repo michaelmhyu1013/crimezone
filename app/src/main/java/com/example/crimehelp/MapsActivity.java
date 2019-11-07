@@ -3,6 +3,7 @@ package com.example.crimehelp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import android.Manifest;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -22,6 +24,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,19 +42,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     double longitude;
     double latitude;
     private GoogleMap mMap;
-    //private FirebaseDatabase crimeZoneDB;
     DatabaseReference crimeEvents;
     SearchView searchView;
     SupportMapFragment mapFragment;
     private List<CrimeEventMarker> crimeEventsList;
+    private BottomSheetBehavior sheetBehavior;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         crimeEvents = FirebaseDatabase.getInstance().getReference("crimeEvents2");
-        //crimeZoneDB = FirebaseDatabase.getInstance();
-        //crimeEvents = crimeZoneDB.getReference("crimeEvents");
         crimeEventsList = new ArrayList<>();
         // Obtain the crimeZoneDB
         //basicReadWrite();
@@ -59,8 +60,35 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+
+        //bottom-sheet init
+        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.maps_activity);
+        View bottomSheet = coordinatorLayout.findViewById(R.id.bottom_sheet);
+        final BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
+        behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                // React to state change
+                Log.e("onStateChanged", "onStateChanged:" + newState);
+//                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+////                    fab.setVisibility(View.GONE);
+//                } else {
+////                    fab.setVisibility(View.VISIBLE);
+//                }
+            }
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                // React to dragging events
+                Log.e("onSlide", "onSlide");
+            }
+        });
+        behavior.setPeekHeight(100);
+
+
         searchView = findViewById(R.id.sv_location);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
             @Override
             public boolean onQueryTextSubmit(String query) {
                 String location = searchView.getQuery().toString();
@@ -134,20 +162,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         crimeEvents.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    CrimeEventMarker crimeEvent;
-                    if(snapshot.getValue() != null) {
-                        crimeEvent = snapshot.getValue(CrimeEventMarker.class);
-                        crimeEventsList.add(crimeEvent);
-                        Log.d(TAG, "Crime type is :" + crimeEvent.getTYPE());
-                        //CrimeEventMarker crimeEvent = dataSnapshot.getValue(CrimeEventMarker.class);
-                        UTM2Deg deg = new UTM2Deg(crimeEvent.getX(),crimeEvent.getY());
-                        LatLng marker = new LatLng(deg.getLatitude(),deg.getLongitude());
-                        mMap.addMarker(new MarkerOptions().position(marker));
-                        crimeEventsList.add(crimeEvent);
-                        Log.d(TAG, "Crime type is :" + crimeEvent.getTYPE());
-                    }
-                }
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                    CrimeEventMarker crimeEvent;
+//                    if(snapshot.getValue() != null) {
+//                        crimeEvent = snapshot.getValue(CrimeEventMarker.class);
+//                        crimeEventsList.add(crimeEvent);
+//                        Log.d(TAG, "Crime type is :" + crimeEvent.getTYPE());
+//                        //CrimeEventMarker crimeEvent = dataSnapshot.getValue(CrimeEventMarker.class);
+//                        UTM2Deg deg = new UTM2Deg(crimeEvent.getX(),crimeEvent.getY());
+//                        LatLng marker = new LatLng(deg.getLatitude(),deg.getLongitude());
+//                        mMap.addMarker(new MarkerOptions().position(marker));
+//                        crimeEventsList.add(crimeEvent);
+//                        Log.d(TAG, "Crime type is :" + crimeEvent.getTYPE());
+//                    }
+//                }
             }
 
             @Override
