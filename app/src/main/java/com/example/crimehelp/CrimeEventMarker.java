@@ -1,33 +1,72 @@
 package com.example.crimehelp;
 
-import java.util.Map;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CrimeEventMarker {
+    public static Set<String> crimeType =  new HashSet<>(Arrays.asList(
+            "Break and Enter Residential/Other",
+            "Homicide",
+            "Mischief",
+            "Offence Against a Person",
+            "Other Theft",
+            "Theft from Vehicle",
+            "Theft of Bicycle",
+            "Theft of Vehicle",
+            "Vehicle Collision or Pedestrian Struck (with Fatality)",
+            "Vehicle Collision or Pedestrian Struck (with Injury)"));
 
-    private long DAY;
-    private long HOUR;
+    public static Set<String> zoneType =  new HashSet<>(Arrays.asList(
+            "Fairview",
+            "West End",
+            "Central Business District",
+            "Mount Pleasant",
+            "Strathcona",
+            "Sunset",
+            "Kensington-Cedar Cottage",
+            "Stanley Park",
+            "Shaughnessy",
+            "Marpole",
+            "Grandview-Woodland",
+            "Victoria-Fraserview",
+            "Kerrisdale",
+            "Kitsilano",
+            "Hastings-Sunrise",
+            "Riley Park",
+            "Oakridge",
+            "West Point Grey",
+            "Arbutus Ridge",
+            "Renfrew-Collingwood",
+            "Killarney",
+            "South Cambie",
+            "Dunbar-Southlands",
+            "Musqueam"));
+
+    private String DAY;
+    private String HOUR;
     private String HUNDRED_BLOCK;
     private String TYPE;
-    private long MINUTE;
-    private long MONTH;
-    private double X;
-    private double Y;
-    private long YEAR;
+    private String MINUTE;
+    private String MONTH;
+    private String X;
+    private String Y;
+    private String YEAR;
     //private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    public long getDAY() {
+    public String getDAY() {
         return DAY;
     }
 
-    public void setDAY(long dAY) {
+    public void setDAY(String dAY) {
         this.DAY = dAY;
     }
 
-    public long getHOUR() {
+    public String getHOUR() {
         return HOUR;
     }
 
-    public void setHOUR(long hOUR) {
+    public void setHOUR(String hOUR) {
         this.HOUR = hOUR;
     }
 
@@ -39,43 +78,43 @@ public class CrimeEventMarker {
         this.HUNDRED_BLOCK = HUNDRED_BLOCK;
     }
 
-    public long getMINUTE() {
+    public String getMINUTE() {
         return MINUTE;
     }
 
-    public void setMINUTE(long mINUTE) {
+    public void setMINUTE(String mINUTE) {
         this.MINUTE = mINUTE;
     }
 
-    public long getMONTH() {
+    public String getMONTH() {
         return MONTH;
     }
 
-    public void setMONTH(long mONTH) {
+    public void setMONTH(String mONTH) {
         this.MONTH = mONTH;
     }
 
-    public double getX() {
+    public String getX() {
         return X;
     }
 
-    public void setX(double x) {
+    public void setX(String x) {
         this.X = x;
     }
 
-    public double getY() {
+    public String getY() {
         return Y;
     }
 
-    public void setY(double y) {
+    public void setY(String y) {
         this.Y = y;
     }
 
-    public long getYEAR() {
+    public String getYEAR() {
         return YEAR;
     }
 
-    public void setYEAR(long yEAR) {
+    public void setYEAR(String yEAR) {
         this.YEAR = yEAR;
     }
 
