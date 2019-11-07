@@ -1,6 +1,9 @@
 package com.example.crimehelp;
 
-import androidx.annotation.NonNull;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -11,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,14 +26,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,12 +39,7 @@ import java.util.List;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = "MainActivity";
-
-    Location location;
-    double longitude;
-    double latitude;
     private GoogleMap mMap;
-    DatabaseReference crimeEvents;
     SearchView searchView;
     SupportMapFragment mapFragment;
     private List<CrimeEventMarker> crimeEventsList;
@@ -52,11 +49,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        crimeEvents = FirebaseDatabase.getInstance().getReference("crimeEvents2");
         crimeEventsList = new ArrayList<>();
-        // Obtain the crimeZoneDB
-        //basicReadWrite();
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -92,7 +85,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public boolean onQueryTextSubmit(String query) {
                 String location = searchView.getQuery().toString();
-                List<Address> addressList = null;
+                List<Address> addressList = new ArrayList<>();
 
                 if (!location.equals("")) {
                     Geocoder geocoder = new Geocoder(MapsActivity.this);
@@ -121,17 +114,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-//        LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-//        if (ContextCompat.checkSelfPermission(this,
-//                Manifest.permission.ACCESS_FINE_LOCATION)
-//                == PackageManager.PERMISSION_GRANTED) {
-//
-//
-//            location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//            longitude = location.getLongitude();
-//            latitude = location.getLatitude();
-
-
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -148,44 +130,61 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
         } else {
-// Show rationale and request permission.
         }
-        // Add a marker in Sydney and move the camera
-//        LatLng test = new LatLng(longitude, latitude);
-//        mMap.addMarker(new MarkerOptions().position(test).title("Marker in Current Location"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(test));
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        crimeEvents.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    CrimeEventMarker crimeEvent;
-//                    if(snapshot.getValue() != null) {
-//                        crimeEvent = snapshot.getValue(CrimeEventMarker.class);
-//                        crimeEventsList.add(crimeEvent);
-//                        Log.d(TAG, "Crime type is :" + crimeEvent.getTYPE());
-//                        //CrimeEventMarker crimeEvent = dataSnapshot.getValue(CrimeEventMarker.class);
-//                        UTM2Deg deg = new UTM2Deg(crimeEvent.getX(),crimeEvent.getY());
-//                        LatLng marker = new LatLng(deg.getLatitude(),deg.getLongitude());
-//                        mMap.addMarker(new MarkerOptions().position(marker));
-//                        crimeEventsList.add(crimeEvent);
-//                        Log.d(TAG, "Crime type is :" + crimeEvent.getTYPE());
-//                    }
-//                }
+        new DownloadFilesTask().execute();
+    }
+
+    private class DownloadFilesTask extends AsyncTask<Void, Void, List<CrimeEventMarker>> {
+
+        protected void onPostExecute(List<CrimeEventMarker> result) {
+            int num = 200;
+            for(CrimeEventMarker crimeEvent : result) {
+                try {
+                    if(num < 0){
+                        return;
+                    }
+                    num--;
+                    UTM2Deg deg = new UTM2Deg(Double.parseDouble(crimeEvent.getX()),Double.parseDouble(crimeEvent.getY()));
+                    LatLng marker = new LatLng(deg.getLatitude(),deg.getLongitude());
+                    //mMap.addMarker(new MarkerOptions().position(marker));
+                    mMap.addCircle(new CircleOptions()
+                            .center(marker)
+                            .radius(250)
+                            .strokeWidth(0f)
+                            .fillColor(0x030000FF));
+                }catch(Exception e) {
+                    Log.d(TAG, e.toString());
+                    continue;
+                }
+            }
+            Log.d(TAG, "Completed async task");
+        }
+
+        @Override
+        protected List<CrimeEventMarker> doInBackground(Void... voids) {
+            BufferedReader reader;
+            try{
+                final InputStream file = getAssets().open("crimeData.txt");
+                reader = new BufferedReader(new InputStreamReader(file));
+                Gson gson = new Gson();
+                Type type = new TypeToken<List<CrimeEventMarker>>(){}.getType();
+                String line = reader.readLine();
+                crimeEventsList = gson.fromJson(line, type);
+
+                String x = "";
+            } catch(IOException ioe){
+                ioe.printStackTrace();
             }
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
-        // [END read_message]
+            return crimeEventsList;
+        }
     }
+
 
     public void openSettingsActivity(View v) {
         Intent openSettings = new Intent(this, SettingsActivity.class);
