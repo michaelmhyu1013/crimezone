@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import android.Manifest;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -27,6 +29,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -40,6 +43,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     SearchView searchView;
     SupportMapFragment mapFragment;
     private List<CrimeEventMarker> crimeEventsList;
+    private BottomSheetBehavior sheetBehavior;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +53,35 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+
+        //bottom-sheet init
+        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.maps_activity);
+        View bottomSheet = coordinatorLayout.findViewById(R.id.bottom_sheet);
+        final BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
+        behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                // React to state change
+                Log.e("onStateChanged", "onStateChanged:" + newState);
+//                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+////                    fab.setVisibility(View.GONE);
+//                } else {
+////                    fab.setVisibility(View.VISIBLE);
+//                }
+            }
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                // React to dragging events
+                Log.e("onSlide", "onSlide");
+            }
+        });
+
+        behavior.setPeekHeight(200);
+
         searchView = findViewById(R.id.sv_location);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
             @Override
             public boolean onQueryTextSubmit(String query) {
                 String location = searchView.getQuery().toString();
@@ -130,7 +161,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Log.d(TAG, e.toString());
                     continue;
                 }
-
             }
             Log.d(TAG, "Completed async task");
         }
