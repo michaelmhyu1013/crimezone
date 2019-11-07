@@ -1,6 +1,47 @@
 package com.example.crimehelp;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 public class CrimeEventMarker {
+    public static Set<String> crimeType =  new HashSet<>(Arrays.asList(
+            "Break and Enter Residential/Other",
+            "Homicide",
+            "Mischief",
+            "Offence Against a Person",
+            "Other Theft",
+            "Theft from Vehicle",
+            "Theft of Bicycle",
+            "Theft of Vehicle",
+            "Vehicle Collision or Pedestrian Struck (with Fatality)",
+            "Vehicle Collision or Pedestrian Struck (with Injury)"));
+
+    public static Set<String> zoneType =  new HashSet<>(Arrays.asList(
+            "Fairview",
+            "West End",
+            "Central Business District",
+            "Mount Pleasant",
+            "Strathcona",
+            "Sunset",
+            "Kensington-Cedar Cottage",
+            "Stanley Park",
+            "Shaughnessy",
+            "Marpole",
+            "Grandview-Woodland",
+            "Victoria-Fraserview",
+            "Kerrisdale",
+            "Kitsilano",
+            "Hastings-Sunrise",
+            "Riley Park",
+            "Oakridge",
+            "West Point Grey",
+            "Arbutus Ridge",
+            "Renfrew-Collingwood",
+            "Killarney",
+            "South Cambie",
+            "Dunbar-Southlands",
+            "Musqueam"));
 
     private String DAY;
     private String HOUR;

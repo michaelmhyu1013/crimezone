@@ -24,6 +24,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
@@ -110,7 +111,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private class DownloadFilesTask extends AsyncTask<Void, Void, List<CrimeEventMarker>> {
 
         protected void onPostExecute(List<CrimeEventMarker> result) {
-            int num = 1000;
+            int num = 4000;
             for(CrimeEventMarker crimeEvent : result) {
                 try {
                     if(num < 0){
@@ -119,7 +120,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     num--;
                     UTM2Deg deg = new UTM2Deg(Double.parseDouble(crimeEvent.getX()),Double.parseDouble(crimeEvent.getY()));
                     LatLng marker = new LatLng(deg.getLatitude(),deg.getLongitude());
-                    mMap.addMarker(new MarkerOptions().position(marker));
+                    //mMap.addMarker(new MarkerOptions().position(marker));
+                    mMap.addCircle(new CircleOptions()
+                            .center(marker)
+                            .radius(250)
+                            .strokeWidth(0f)
+                            .fillColor(0x030000FF));
                 }catch(Exception e) {
                     Log.d(TAG, e.toString());
                     continue;
