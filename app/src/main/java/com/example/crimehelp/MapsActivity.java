@@ -1,10 +1,6 @@
 package com.example.crimehelp;
 
-import androidx.annotation.NonNull;
-
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
@@ -30,28 +26,16 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = "MainActivity";
-    private String jsonString = "";
-    Location location;
-    double longitude;
-    double latitude;
     private GoogleMap mMap;
-    //private FirebaseDatabase crimeZoneDB;
-    DatabaseReference crimeEvents;
     SearchView searchView;
     SupportMapFragment mapFragment;
     private List<CrimeEventMarker> crimeEventsList;
@@ -60,13 +44,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        crimeEvents = FirebaseDatabase.getInstance().getReference("crimeEvents2");
-        //crimeZoneDB = FirebaseDatabase.getInstance();
-        //crimeEvents = crimeZoneDB.getReference("crimeEvents");
         crimeEventsList = new ArrayList<>();
-        // Obtain the crimeZoneDB
-        //basicReadWrite();
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -104,17 +82,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-//        LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-//        if (ContextCompat.checkSelfPermission(this,
-//                Manifest.permission.ACCESS_FINE_LOCATION)
-//                == PackageManager.PERMISSION_GRANTED) {
-//
-//
-//            location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//            longitude = location.getLongitude();
-//            latitude = location.getLatitude();
-
-
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -131,12 +98,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
         } else {
-// Show rationale and request permission.
         }
-        // Add a marker in Sydney and move the camera
-//        LatLng test = new LatLng(longitude, latitude);
-//        mMap.addMarker(new MarkerOptions().position(test).title("Marker in Current Location"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(test));
     }
 
     @Override
