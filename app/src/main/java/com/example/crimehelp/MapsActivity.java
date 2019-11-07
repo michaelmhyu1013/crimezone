@@ -111,7 +111,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private class DownloadFilesTask extends AsyncTask<Void, Void, List<CrimeEventMarker>> {
 
         protected void onPostExecute(List<CrimeEventMarker> result) {
-            int num = 4000;
+            int num = 200;
             for(CrimeEventMarker crimeEvent : result) {
                 try {
                     if(num < 0){
