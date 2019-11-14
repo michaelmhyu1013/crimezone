@@ -13,11 +13,9 @@ import java.util.GregorianCalendar;
 
 public class CrimeEventInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
-    private CrimeEventMarker marker;
     private LayoutInflater inflater = null;
 
-    public CrimeEventInfoWindowAdapter(CrimeEventMarker marker, LayoutInflater inflater) {
-        this.marker = marker;
+    public CrimeEventInfoWindowAdapter(LayoutInflater inflater) {
         this.inflater = inflater;
     }
 
@@ -29,22 +27,22 @@ public class CrimeEventInfoWindowAdapter implements GoogleMap.InfoWindowAdapter 
     @Override
     public View getInfoContents(Marker marker) {
         View windowLayoutView = inflater.inflate(R.layout.crime_event_window_layout, null);
-        windowLayoutView.setLayoutParams(new LinearLayout.LayoutParams(500, LinearLayout.LayoutParams.WRAP_CONTENT));
+        try {
+            //TODO: if we click on a current location or searched marker what should we do
+            windowLayoutView.setLayoutParams(new LinearLayout.LayoutParams(500, LinearLayout.LayoutParams.WRAP_CONTENT));
+            String[] dataString =marker.getSnippet().split("~");
 
-        TextView tvCrimeType = windowLayoutView.findViewById(R.id.crimeTypeWindow);
-        tvCrimeType.setText(this.marker.getTYPE());
-        TextView tvCrimeHundredBlock = windowLayoutView.findViewById(R.id.hundredBlockWindow);
-        tvCrimeHundredBlock.setText(this.marker.getHUNDRED_BLOCK());
-        TextView tvCrimeNeighbourhood = windowLayoutView.findViewById(R.id.neighbourhoodWindow);
-        tvCrimeNeighbourhood.setText(this.marker.getNEIGHBOURHOOD());
-        TextView tvCrimeDate = windowLayoutView.findViewById(R.id.dateWindow);
-        Date tvDate = new GregorianCalendar(Integer.parseInt(this.marker.getYEAR()),
-                Integer.parseInt(this.marker.getMONTH()), Integer.parseInt(this.marker.getDAY()),
-                Integer.parseInt(this.marker.getHOUR()), Integer.parseInt(this.marker.getMINUTE())).getTime();
-
-        String date = "" + tvDate;
-        tvCrimeDate.setText(date);
-
+            TextView tvCrimeType = windowLayoutView.findViewById(R.id.crimeTypeWindow);
+            tvCrimeType.setText(dataString[0]);
+            TextView tvCrimeHundredBlock = windowLayoutView.findViewById(R.id.hundredBlockWindow);
+            tvCrimeHundredBlock.setText(dataString[1]);
+            TextView tvCrimeNeighbourhood = windowLayoutView.findViewById(R.id.neighbourhoodWindow);
+            tvCrimeNeighbourhood.setText(dataString[2]);
+            TextView tvCrimeDate = windowLayoutView.findViewById(R.id.dateWindow);
+            tvCrimeDate.setText(dataString[3]);
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
         return windowLayoutView;
     }
 }

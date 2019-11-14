@@ -54,7 +54,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     ListView lvCrimeEventsSlideUp;
     private BottomSheetBehavior sheetBehavior;
     private FusedLocationProviderClient fusedLocationClient;
-    private HashMap<Marker, CrimeEventMarker> searchMarkers;
+    private ArrayList<Marker> searchMarkers;
     private List<Circle> searchRadius;
     //private Marker currentLocationMarker;
 
@@ -67,8 +67,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        searchMarkers = new HashMap<>();
+        searchMarkers = new ArrayList<>();
         searchRadius = new ArrayList<>();
+
 
         //bottom-sheet init
         CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.maps_activity);
@@ -140,10 +141,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         try {
                             double latitude = Double.parseDouble(crimeEvent.getX());
                             double longitude = Double.parseDouble(crimeEvent.getY());
-                            if (LatLongDistance.distance(latitude, latLng.latitude, longitude, latLng.longitude) < 175) {
-                                LatLng marker = new LatLng(latitude, longitude);
-                                mMap.setInfoWindowAdapter(new CrimeEventInfoWindowAdapter(crimeEvent, getLayoutInflater()));
-                                searchMarkers.put(mMap.addMarker(new MarkerOptions().position(marker)), crimeEvent);
+                            if(LatLongDistance.distance(latitude, latLng.latitude, longitude, latLng.longitude) < 175) {
+                                LatLng marker = new LatLng(latitude,longitude);
+                                searchMarkers.add(mMap.addMarker(new MarkerOptions().position(marker).snippet(crimeEvent.toString())));
                                 searchRadius.add(mMap.addCircle(new CircleOptions()
                                         .center(marker)
                                         .radius(30)
@@ -155,11 +155,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             e.printStackTrace();
                         }
                     }
-                    ArrayList<CrimeEventMarker> list = new ArrayList<>(searchMarkers.values());
-                    CrimeEventListAdapter adapter = new CrimeEventListAdapter(MapsActivity.this, list);
-                    lvCrimeEventsSlideUp.setAdapter(adapter);
-                    searchMarkers.put(mMap.addMarker(new MarkerOptions().position(latLng).title(location)), null);
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+//                    ArrayList<Marker> list = new ArrayList<>(searchMarkers);
+//                    CrimeEventListAdapter adapter = new CrimeEventListAdapter(MapsActivity.this, list);
+//                    lvCrimeEventsSlideUp.setAdapter(adapter);
+//                    searchMarkers.add(mMap.addMarker(new MarkerOptions().position(latLng).title(location)));
+//                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
                 }
                 return true;
             }
@@ -203,7 +203,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
-        } else {
+            mMap.setInfoWindowAdapter(new CrimeEventInfoWindowAdapter(getLayoutInflater()));
+        }else {
             Log.d(TAG, "Location permissions denied.");
         }
     }
@@ -259,7 +260,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * We need to remove every marker from the map before we do a search.
      */
     private void clearSearchMarkersAndCircles() {
-        for (Marker marker : searchMarkers.keySet()) {
+        for (Marker marker : searchMarkers) {
 
             marker.remove();
         }
