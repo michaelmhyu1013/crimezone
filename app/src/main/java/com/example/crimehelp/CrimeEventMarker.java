@@ -26,6 +26,16 @@ public class CrimeEventMarker {
     private String X;
     private String Y;
     private String YEAR;
+
+    public String getNEIGHBOURHOOD() {
+        return NEIGHBOURHOOD;
+    }
+
+    public void setNEIGHBOURHOOD(String nEIGHBOURHOOD) {
+        this.NEIGHBOURHOOD = nEIGHBOURHOOD;
+    }
+
+    private String NEIGHBOURHOOD;
     //private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     public String getDAY() {
