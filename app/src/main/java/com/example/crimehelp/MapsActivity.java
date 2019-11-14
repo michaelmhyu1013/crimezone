@@ -1,15 +1,5 @@
 package com.example.crimehelp;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -22,6 +12,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.SearchView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -39,7 +34,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,6 +81,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 ////                    fab.setVisibility(View.VISIBLE);
 //                }
             }
+
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
                 // React to dragging events
@@ -106,7 +106,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    if(addressList.size() < 1) {
+                    if (addressList.size() < 1) {
                         Toast.makeText(MapsActivity.this, "No search results.", Toast.LENGTH_LONG).show();
                         return false;
                     }
@@ -124,6 +124,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             double longitude = Double.parseDouble(crimeEvent.getY());
                             if(LatLongDistance.distance(latitude, latLng.latitude, longitude, latLng.longitude) < 175) {
                                 LatLng marker = new LatLng(latitude,longitude);
+                                mMap.setInfoWindowAdapter(new CrimeEventInfoWindowAdapter(crimeEvent, getLayoutInflater()));
                                 searchMarkers.add(mMap.addMarker(new MarkerOptions().position(marker)));
                                 searchRadius.add(mMap.addCircle(new CircleOptions()
                                         .center(marker)
@@ -164,9 +165,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 });
 
 
-
-
-
     }
 
     /**
@@ -205,11 +203,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         @Override
         protected List<CrimeEventMarker> doInBackground(Void... voids) {
             BufferedReader reader;
-            try{
+            try {
                 final InputStream file = getAssets().open("crimeData.txt");
                 reader = new BufferedReader(new InputStreamReader(file));
                 Gson gson = new Gson();
-                Type type = new TypeToken<List<CrimeEventMarker>>(){}.getType();
+                Type type = new TypeToken<List<CrimeEventMarker>>() {
+                }.getType();
                 String line = reader.readLine();
                 crimeEventsList = gson.fromJson(line, type);
                 for(CrimeEventMarker crimeEvent : crimeEventsList) {
