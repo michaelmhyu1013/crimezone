@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="500dp"
+    android:orientation="horizontal">
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_weight="1"
-        tools:srcCompat="@tools:sample/avatars[6]"
-        android:contentDescription="TODO" />
+        android:contentDescription="@string/crime_image"
+        tools:srcCompat="@tools:sample/avatars[6]" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,15 +22,21 @@
             android:id="@+id/crimeEventType"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="4dp"
             android:text="@string/crime_type"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/crimeEventTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="4dp"
             android:text="@string/crime_time"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+            android:textSize="12sp" />
     </LinearLayout>
 
 </LinearLayout>

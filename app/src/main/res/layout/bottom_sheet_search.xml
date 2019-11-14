@@ -13,25 +13,35 @@
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
     tools:context=".MapsActivity">
 
+
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="5"
+        android:layout_width="wrap_content"
+        android:layout_height="350dp"
+        android:layout_gravity="bottom"
+        android:gravity="bottom"
         android:orientation="vertical">
 
-        <SearchView
-            android:id="@+id/sv_location"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="33dp"
-            android:iconifiedByDefault="false" />
+            android:layout_weight="5"
+            android:orientation="vertical">
 
-        <ListView
-            android:id="@+id/search_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            <SearchView
+                android:id="@+id/sv_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="33dp"
+                android:iconifiedByDefault="false" />
 
-        <!--        </ScrollView>-->
+            <ListView
+                android:id="@+id/search_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <!--        </ScrollView>-->
+
+        </LinearLayout>
 
     </LinearLayout>
 
