@@ -11,4 +11,6 @@
     <string name="date">Date</string>
     <string name="crime_time">Crime Time</string>
     <string name="crime_image">Crime Image</string>
+    <string name="Open">NavBar</string>
+    <string name="Close">NavBar</string>
 </resources>

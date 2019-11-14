@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/switchMischief"
+        app:actionViewClass = "android.widget.Switch"
+        android:title="Mischief">
+    </item>
+    <item
+        android:id="@+id/switchOffense"
+        app:actionViewClass = "android.widget.Switch"
+        android:title="Offense Against a Person">
+    </item>
+    <item
+        android:id="@+id/switchOtherTheft"
+        app:actionViewClass = "android.widget.Switch"
+        android:title="Other Theft">
+    </item>
+    <item
+        android:id="@+id/switchTheftFromVehicle"
+        app:actionViewClass = "android.widget.Switch"
+        android:title="Theft from Vehicle">
+    </item>
+    <item
+        android:id="@+id/switchTheftFromBicycle"
+        app:actionViewClass = "android.widget.Switch"
+        android:title= "Theft of Bicycle">
+    </item>
+    <item
+        android:id="@+id/switchTheftOfVehicle"
+        app:actionViewClass = "android.widget.Switch"
+        android:title= "Theft of Vehicle">
+    </item>
+    <item
+        android:id="@+id/switchVehicleCollisionFatal"
+        app:actionViewClass = "android.widget.Switch"
+        android:title= "Vehicle Collision (with Fatality)">
+    </item>
+    <item
+        android:id="@+id/switchVehicleCollisionInjury"
+        app:actionViewClass = "android.widget.Switch"
+        android:title= "Vehicle Collision (with Injury)">
+    </item>
+</menu>
