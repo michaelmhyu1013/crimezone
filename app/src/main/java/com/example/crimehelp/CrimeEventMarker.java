@@ -31,8 +31,8 @@ public class CrimeEventMarker {
         return NEIGHBOURHOOD;
     }
 
-    public void setNEIGHBOURHOOD(String NEIGHBOURHOOD) {
-        this.NEIGHBOURHOOD = NEIGHBOURHOOD;
+    public void setNEIGHBOURHOOD(String nEIGHBOURHOOD) {
+        this.NEIGHBOURHOOD = nEIGHBOURHOOD;
     }
 
     private String NEIGHBOURHOOD;
