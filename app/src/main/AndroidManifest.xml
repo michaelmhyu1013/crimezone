@@ -43,6 +43,7 @@
             android:name=".SettingsActivity"
             android:label="@string/Settings">
         </activity>
+        <service android:name="com.example.crimehelp.MyService" android:enabled="true"/>
     </application>
 
 </manifest>

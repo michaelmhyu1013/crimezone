@@ -65,7 +65,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
         searchMarkers = new ArrayList<>();
         searchRadius = new ArrayList<>();
-
+        try{
+            startService(new Intent(this,MyService.class));
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
 
         //bottom-sheet init
         CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.maps_activity);
