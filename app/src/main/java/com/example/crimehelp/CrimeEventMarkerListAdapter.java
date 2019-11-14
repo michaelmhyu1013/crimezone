@@ -17,17 +17,17 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public class CrimeEventListAdapter extends ArrayAdapter<Marker> {
+public class CrimeEventMarkerListAdapter extends ArrayAdapter<Marker> {
     private Activity context;
     private List<Marker> crimeEventsList;
 
-    public CrimeEventListAdapter(Activity context, List<Marker> crimeEventsList) {
+    public CrimeEventMarkerListAdapter(Activity context, List<Marker> crimeEventsList) {
         super(context, R.layout.bottom_sheet_crime_list_layout, crimeEventsList);
         this.context = context;
         this.crimeEventsList = crimeEventsList;
     }
 
-    public CrimeEventListAdapter(Context context, int resource, List<Marker> objects, Activity context1, List<Marker> crimeEventsList) {
+    public CrimeEventMarkerListAdapter(Context context, int resource, List<Marker> objects, Activity context1, List<Marker> crimeEventsList) {
         super(context, resource, objects);
         this.context = context1;
         this.crimeEventsList = crimeEventsList;

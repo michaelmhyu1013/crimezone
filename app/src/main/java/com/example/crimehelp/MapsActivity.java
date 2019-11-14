@@ -154,7 +154,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                     }
                     ArrayList<Marker> list = new ArrayList<>(searchMarkers);
-                    CrimeEventListAdapter adapter = new CrimeEventListAdapter(MapsActivity.this, list);
+                    CrimeEventMarkerListAdapter adapter = new CrimeEventMarkerListAdapter(MapsActivity.this, list);
                     lvCrimeEventsSlideUp.setAdapter(adapter);
                     searchMarkers.add(mMap.addMarker(new MarkerOptions().position(latLng).title(location)));
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
