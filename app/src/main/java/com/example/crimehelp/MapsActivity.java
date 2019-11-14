@@ -30,8 +30,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -45,11 +47,14 @@ import java.util.List;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = "MainActivity";
     private GoogleMap mMap;
-    SearchView searchView;
-    SupportMapFragment mapFragment;
+    private SearchView searchView;
+    private SupportMapFragment mapFragment;
     private List<CrimeEventMarker> crimeEventsList;
     private BottomSheetBehavior sheetBehavior;
     private FusedLocationProviderClient fusedLocationClient;
+    private List<Marker> searchMarkers;
+    private List<Circle> searchRadius;
+    //private Marker currentLocationMarker;
 
 
     @Override
@@ -60,7 +65,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
+        searchMarkers = new ArrayList<>();
+        searchRadius = new ArrayList<>();
 
         //bottom-sheet init
         CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.maps_activity);
@@ -105,10 +111,34 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         Toast.makeText(MapsActivity.this, "No search results.", Toast.LENGTH_LONG).show();
                         return false;
                     }
+
                     Address address = addressList.get(0);
                     LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                    int count = 50;
+                    clearSearchMarkersAndCircles();
+                    for(CrimeEventMarker crimeEvent : crimeEventsList) {
+                        if(count <= 0) {
+                            break;
+                        }
+                        try {
+                            double latitude = Double.parseDouble(crimeEvent.getX());
+                            double longitude = Double.parseDouble(crimeEvent.getY());
+                            if(LatLongDistance.distance(latitude, latLng.latitude, longitude, latLng.longitude) < 175) {
+                                LatLng marker = new LatLng(latitude,longitude);
+                                searchMarkers.add(mMap.addMarker(new MarkerOptions().position(marker)));
+                                searchRadius.add(mMap.addCircle(new CircleOptions()
+                                        .center(marker)
+                                        .radius(3)
+                                        .strokeWidth(0f)
+                                        .fillColor(0x100000FF)));
+                                count--;
+                            }
+                        }catch(Exception e) {
+                          e.printStackTrace();
+                        }
+                    }
                     mMap.addMarker(new MarkerOptions().position(latLng).title(location));
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
                 }
                 return true;
             }
@@ -168,21 +198,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private class DownloadFilesTask extends AsyncTask<Void, Void, List<CrimeEventMarker>> {
 
         protected void onPostExecute(List<CrimeEventMarker> result) {
-            int num = 200;
+            int num = 10;
             for(CrimeEventMarker crimeEvent : result) {
                 try {
                     if(num < 0){
                         return;
                     }
                     num--;
-                    UTM2Deg deg = new UTM2Deg(Double.parseDouble(crimeEvent.getX()),Double.parseDouble(crimeEvent.getY()));
-                    LatLng marker = new LatLng(deg.getLatitude(),deg.getLongitude());
-                    //mMap.addMarker(new MarkerOptions().position(marker));
+                    //UTM2Deg deg = new UTM2Deg(Double.parseDouble(crimeEvent.getX()),Double.parseDouble(crimeEvent.getY()));
+                    LatLng marker = new LatLng(Double.parseDouble(crimeEvent.getX()),Double.parseDouble(crimeEvent.getY()));
+                    mMap.addMarker(new MarkerOptions().position(marker));
                     mMap.addCircle(new CircleOptions()
                             .center(marker)
                             .radius(250)
                             .strokeWidth(0f)
-                            .fillColor(0x030000FF));
+                            .fillColor(0x100000FF));
                 }catch(Exception e) {
                     Log.d(TAG, e.toString());
                     continue;
@@ -201,11 +231,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Type type = new TypeToken<List<CrimeEventMarker>>(){}.getType();
                 String line = reader.readLine();
                 crimeEventsList = gson.fromJson(line, type);
-
-                String x = "";
-            } catch(IOException ioe){
-                ioe.printStackTrace();
+                for(CrimeEventMarker crimeEvent : crimeEventsList) {
+                    try {
+                        UTM2Deg deg = new UTM2Deg(Double.parseDouble(crimeEvent.getX()), Double.parseDouble(crimeEvent.getY()));
+                        crimeEvent.setY(deg.getLongitude() + "");
+                        crimeEvent.setX(deg.getLatitude() + "");
+                    }catch(Exception e2) {
+                        e2.printStackTrace();
+                        continue;
+                    }
+                }
+            } catch(Exception e){
+                e.printStackTrace();
             }
+
 
             return crimeEventsList;
         }
@@ -215,5 +254,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void openSettingsActivity(View v) {
         Intent openSettings = new Intent(this, SettingsActivity.class);
         startActivity(openSettings);
+    }
+
+    private void clearSearchMarkersAndCircles() {
+        for(Marker marker : searchMarkers) {
+            marker.remove();
+        }
+        searchMarkers.clear();
+        for(Circle circle : searchRadius) {
+            circle.remove();
+        }
+        searchRadius.clear();
     }
 }
