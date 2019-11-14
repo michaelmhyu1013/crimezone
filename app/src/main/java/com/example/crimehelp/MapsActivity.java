@@ -20,7 +20,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -128,7 +127,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 searchMarkers.add(mMap.addMarker(new MarkerOptions().position(marker)));
                                 searchRadius.add(mMap.addCircle(new CircleOptions()
                                         .center(marker)
-                                        .radius(3)
+                                        .radius(30)
                                         .strokeWidth(0f)
                                         .fillColor(0x100000FF)));
                                 count--;
@@ -137,8 +136,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                           e.printStackTrace();
                         }
                     }
-                    mMap.addMarker(new MarkerOptions().position(latLng).title(location));
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+                    searchMarkers.add(mMap.addMarker(new MarkerOptions().position(latLng).title(location)));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
                 }
                 return true;
             }
@@ -185,39 +184,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
-        } else {
+        }else {
+            Log.d(TAG, "Location permissions denied.");
         }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        new DownloadFilesTask().execute();
+        new readAllCrimeDataTask().execute();
     }
 
-    private class DownloadFilesTask extends AsyncTask<Void, Void, List<CrimeEventMarker>> {
+    private class readAllCrimeDataTask extends AsyncTask<Void, Void, List<CrimeEventMarker>> {
 
         protected void onPostExecute(List<CrimeEventMarker> result) {
-            int num = 10;
-            for(CrimeEventMarker crimeEvent : result) {
-                try {
-                    if(num < 0){
-                        return;
-                    }
-                    num--;
-                    //UTM2Deg deg = new UTM2Deg(Double.parseDouble(crimeEvent.getX()),Double.parseDouble(crimeEvent.getY()));
-                    LatLng marker = new LatLng(Double.parseDouble(crimeEvent.getX()),Double.parseDouble(crimeEvent.getY()));
-                    mMap.addMarker(new MarkerOptions().position(marker));
-                    mMap.addCircle(new CircleOptions()
-                            .center(marker)
-                            .radius(250)
-                            .strokeWidth(0f)
-                            .fillColor(0x100000FF));
-                }catch(Exception e) {
-                    Log.d(TAG, e.toString());
-                    continue;
-                }
-            }
+            //TODO: maybe we can get current location and plot crime points for current location
             Log.d(TAG, "Completed async task");
         }
 
@@ -244,8 +225,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             } catch(Exception e){
                 e.printStackTrace();
             }
-
-
             return crimeEventsList;
         }
     }
@@ -256,6 +235,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         startActivity(openSettings);
     }
 
+    /**
+     * We need to remove every marker from the map before we do a search.
+     */
     private void clearSearchMarkersAndCircles() {
         for(Marker marker : searchMarkers) {
             marker.remove();
