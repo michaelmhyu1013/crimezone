@@ -2,10 +2,14 @@ package com.example.crimehelp;
 
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
+
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class CrimeEventInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
@@ -25,6 +29,7 @@ public class CrimeEventInfoWindowAdapter implements GoogleMap.InfoWindowAdapter 
     @Override
     public View getInfoContents(Marker marker) {
         View windowLayoutView = inflater.inflate(R.layout.crime_event_window_layout, null);
+        windowLayoutView.setLayoutParams(new LinearLayout.LayoutParams(500, LinearLayout.LayoutParams.WRAP_CONTENT));
 
         TextView tvCrimeType = windowLayoutView.findViewById(R.id.crimeTypeWindow);
         tvCrimeType.setText(this.marker.getTYPE());
@@ -33,8 +38,11 @@ public class CrimeEventInfoWindowAdapter implements GoogleMap.InfoWindowAdapter 
         TextView tvCrimeNeighbourhood = windowLayoutView.findViewById(R.id.neighbourhoodWindow);
         tvCrimeNeighbourhood.setText(this.marker.getNEIGHBOURHOOD());
         TextView tvCrimeDate = windowLayoutView.findViewById(R.id.dateWindow);
-        String date = this.marker.getHOUR() + ":" + this.marker.getMINUTE() + " " + this.marker.getDAY()
-                + " " + this.marker.getMONTH() + " " + this.marker.getYEAR();
+        Date tvDate = new GregorianCalendar(Integer.parseInt(this.marker.getYEAR()),
+                Integer.parseInt(this.marker.getMONTH()), Integer.parseInt(this.marker.getDAY()),
+                Integer.parseInt(this.marker.getHOUR()), Integer.parseInt(this.marker.getMINUTE())).getTime();
+
+        String date = "" + tvDate;
         tvCrimeDate.setText(date);
 
         return windowLayoutView;

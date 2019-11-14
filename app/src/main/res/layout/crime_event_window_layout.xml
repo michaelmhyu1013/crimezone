@@ -10,12 +10,12 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+
         <TextView
             android:id="@+id/crimeTypeWindow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/crime_type" />
-
         <TextView
             android:id="@+id/hundredBlockWindow"
             android:layout_width="match_parent"
@@ -31,52 +31,10 @@
         <TextView
             android:id="@+id/dateWindow"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="1"
             android:text="@string/date" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/crimeHour"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="left"
-                android:text="Hour" />
-
-            <TextView
-                android:id="@+id/minute"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="left"
-                android:text="Minute" />
-
-            <TextView
-                android:id="@+id/day"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Day" />
-
-            <TextView
-                android:id="@+id/month"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Month" />
-
-            <TextView
-                android:id="@+id/year"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Year" />
-
-        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

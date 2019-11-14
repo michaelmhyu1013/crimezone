@@ -1,15 +1,5 @@
 package com.example.crimehelp;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,9 +10,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -38,7 +32,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,6 +75,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 ////                    fab.setVisibility(View.VISIBLE);
 //                }
             }
+
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
                 // React to dragging events
@@ -101,7 +100,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    if(addressList.size() < 1) {
+                    if (addressList.size() < 1) {
                         Toast.makeText(MapsActivity.this, "No search results.", Toast.LENGTH_LONG).show();
                         return false;
                     }
@@ -135,9 +134,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 });
 
 
-
-
-
     }
 
     /**
@@ -169,14 +165,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         protected void onPostExecute(List<CrimeEventMarker> result) {
             int num = 200;
-            for(CrimeEventMarker crimeEvent : result) {
+            for (CrimeEventMarker crimeEvent : result) {
                 try {
-                    if(num < 0){
+                    if (num < 0) {
                         return;
                     }
                     num--;
-                    UTM2Deg deg = new UTM2Deg(Double.parseDouble(crimeEvent.getX()),Double.parseDouble(crimeEvent.getY()));
-                    LatLng markerLatLng = new LatLng(deg.getLatitude(),deg.getLongitude());
+                    UTM2Deg deg = new UTM2Deg(Double.parseDouble(crimeEvent.getX()), Double.parseDouble(crimeEvent.getY()));
+                    LatLng markerLatLng = new LatLng(deg.getLatitude(), deg.getLongitude());
+
                     mMap.setInfoWindowAdapter(new CrimeEventInfoWindowAdapter(crimeEvent, getLayoutInflater()));
                     mMap.addMarker(new MarkerOptions().position(markerLatLng));
                     mMap.addCircle(new CircleOptions()
@@ -184,7 +181,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             .radius(250)
                             .strokeWidth(0f)
                             .fillColor(0x030000FF));
-                }catch(Exception e) {
+                } catch (Exception e) {
                     Log.d(TAG, e.toString());
                     continue;
                 }
@@ -195,16 +192,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         @Override
         protected List<CrimeEventMarker> doInBackground(Void... voids) {
             BufferedReader reader;
-            try{
+            try {
                 final InputStream file = getAssets().open("crimeData.txt");
                 reader = new BufferedReader(new InputStreamReader(file));
                 Gson gson = new Gson();
-                Type type = new TypeToken<List<CrimeEventMarker>>(){}.getType();
+                Type type = new TypeToken<List<CrimeEventMarker>>() {
+                }.getType();
                 String line = reader.readLine();
                 crimeEventsList = gson.fromJson(line, type);
 
                 String x = "";
-            } catch(IOException ioe){
+            } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
 
