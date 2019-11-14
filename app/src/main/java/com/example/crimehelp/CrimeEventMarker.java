@@ -17,32 +17,6 @@ public class CrimeEventMarker {
             "Vehicle Collision or Pedestrian Struck (with Fatality)",
             "Vehicle Collision or Pedestrian Struck (with Injury)"));
 
-    public static Set<String> zoneType =  new HashSet<>(Arrays.asList(
-            "Fairview",
-            "West End",
-            "Central Business District",
-            "Mount Pleasant",
-            "Strathcona",
-            "Sunset",
-            "Kensington-Cedar Cottage",
-            "Stanley Park",
-            "Shaughnessy",
-            "Marpole",
-            "Grandview-Woodland",
-            "Victoria-Fraserview",
-            "Kerrisdale",
-            "Kitsilano",
-            "Hastings-Sunrise",
-            "Riley Park",
-            "Oakridge",
-            "West Point Grey",
-            "Arbutus Ridge",
-            "Renfrew-Collingwood",
-            "Killarney",
-            "South Cambie",
-            "Dunbar-Southlands",
-            "Musqueam"));
-
     private String DAY;
     private String HOUR;
     private String HUNDRED_BLOCK;
