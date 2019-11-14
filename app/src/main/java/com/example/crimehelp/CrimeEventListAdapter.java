@@ -11,21 +11,23 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.maps.model.Marker;
+
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public class CrimeEventListAdapter extends ArrayAdapter<CrimeEventMarker> {
+public class CrimeEventListAdapter extends ArrayAdapter<Marker> {
     private Activity context;
-    private List<CrimeEventMarker> crimeEventsList;
+    private List<Marker> crimeEventsList;
 
-    public CrimeEventListAdapter(Activity context, List<CrimeEventMarker> crimeEventsList) {
+    public CrimeEventListAdapter(Activity context, List<Marker> crimeEventsList) {
         super(context, R.layout.bottom_sheet_crime_list_layout, crimeEventsList);
         this.context = context;
         this.crimeEventsList = crimeEventsList;
     }
 
-    public CrimeEventListAdapter(Context context, int resource, List<CrimeEventMarker> objects, Activity context1, List<CrimeEventMarker> crimeEventsList) {
+    public CrimeEventListAdapter(Context context, int resource, List<Marker> objects, Activity context1, List<Marker> crimeEventsList) {
         super(context, resource, objects);
         this.context = context1;
         this.crimeEventsList = crimeEventsList;
@@ -41,15 +43,12 @@ public class CrimeEventListAdapter extends ArrayAdapter<CrimeEventMarker> {
         TextView crimeEventType = listViewItem.findViewById(R.id.crimeEventType);
         TextView crimeEventTime = listViewItem.findViewById(R.id.crimeEventTime);
         try {
-        CrimeEventMarker crimeEvent = crimeEventsList.get(position);
+            Marker crimeEvent = crimeEventsList.get(position);
 
-            crimeEventType.setText(crimeEvent.getTYPE());
+            String[] crimeData = crimeEvent.getSnippet().split("~");
 
-            Date tvDate = new GregorianCalendar(Integer.parseInt(crimeEvent.getYEAR()),
-                    Integer.parseInt(crimeEvent.getMONTH()), Integer.parseInt(crimeEvent.getDAY()),
-                    Integer.parseInt(crimeEvent.getHOUR()), Integer.parseInt(crimeEvent.getMINUTE())).getTime();
-            String date = "" + tvDate;
-            crimeEventTime.setText(date);
+            crimeEventType.setText(crimeData[0]);
+            crimeEventTime.setText(crimeData[3]);
 
         } catch (Exception e) {
             Log.e("ADAPTER ERROR", e.toString());
@@ -59,7 +58,7 @@ public class CrimeEventListAdapter extends ArrayAdapter<CrimeEventMarker> {
         return listViewItem;
     }
 
-    public CrimeEventMarker getItem(int position){
+    public Marker getItem(int position) {
         return crimeEventsList.get(position);
     }
 

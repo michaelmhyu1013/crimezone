@@ -42,7 +42,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -101,12 +100,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
                 // create temp arraylist of selected marker just to move map to selected list item
-                CrimeEventMarker crimeEventMarker = (CrimeEventMarker) adapter.getItemAtPosition(position);
+                Marker crimeEventMarker = (Marker) adapter.getItemAtPosition(position);
                 behavior.setPeekHeight(200);
-                double latitude = Double.parseDouble(crimeEventMarker.getX());
-                double longitude = Double.parseDouble(crimeEventMarker.getY());
-                LatLng selectedListItem = new LatLng(latitude, longitude);
+                LatLng selectedListItem = crimeEventMarker.getPosition();
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(selectedListItem, 16));
+                crimeEventMarker.showInfoWindow();
             }
         });
 
@@ -141,8 +139,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         try {
                             double latitude = Double.parseDouble(crimeEvent.getX());
                             double longitude = Double.parseDouble(crimeEvent.getY());
-                            if(LatLongDistance.distance(latitude, latLng.latitude, longitude, latLng.longitude) < 175) {
-                                LatLng marker = new LatLng(latitude,longitude);
+                            if (LatLongDistance.distance(latitude, latLng.latitude, longitude, latLng.longitude) < 175) {
+                                LatLng marker = new LatLng(latitude, longitude);
                                 searchMarkers.add(mMap.addMarker(new MarkerOptions().position(marker).snippet(crimeEvent.toString())));
                                 searchRadius.add(mMap.addCircle(new CircleOptions()
                                         .center(marker)
@@ -155,11 +153,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             e.printStackTrace();
                         }
                     }
-//                    ArrayList<Marker> list = new ArrayList<>(searchMarkers);
-//                    CrimeEventListAdapter adapter = new CrimeEventListAdapter(MapsActivity.this, list);
-//                    lvCrimeEventsSlideUp.setAdapter(adapter);
-//                    searchMarkers.add(mMap.addMarker(new MarkerOptions().position(latLng).title(location)));
-//                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+                    ArrayList<Marker> list = new ArrayList<>(searchMarkers);
+                    CrimeEventListAdapter adapter = new CrimeEventListAdapter(MapsActivity.this, list);
+                    lvCrimeEventsSlideUp.setAdapter(adapter);
+                    searchMarkers.add(mMap.addMarker(new MarkerOptions().position(latLng).title(location)));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
                 }
                 return true;
             }
@@ -204,7 +202,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
             mMap.setInfoWindowAdapter(new CrimeEventInfoWindowAdapter(getLayoutInflater()));
-        }else {
+        } else {
             Log.d(TAG, "Location permissions denied.");
         }
     }
