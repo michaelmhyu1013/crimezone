@@ -10,6 +10,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -40,6 +42,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -48,9 +51,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private SearchView searchView;
     private SupportMapFragment mapFragment;
     private List<CrimeEventMarker> crimeEventsList;
+    ListView lvCrimeEventsSlideUp;
     private BottomSheetBehavior sheetBehavior;
     private FusedLocationProviderClient fusedLocationClient;
-    private List<Marker> searchMarkers;
+    private HashMap<Marker, CrimeEventMarker> searchMarkers;
     private List<Circle> searchRadius;
     //private Marker currentLocationMarker;
 
@@ -63,13 +67,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        searchMarkers = new ArrayList<>();
+        searchMarkers = new HashMap<>();
         searchRadius = new ArrayList<>();
 
         //bottom-sheet init
         CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.maps_activity);
         View bottomSheet = coordinatorLayout.findViewById(R.id.bottom_sheet);
+
         final BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
+        behavior.setPeekHeight(200);
         behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
@@ -89,7 +95,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        behavior.setPeekHeight(200);
+        lvCrimeEventsSlideUp = bottomSheet.findViewById(R.id.search_list);
+        lvCrimeEventsSlideUp.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
+                // create temp arraylist of selected marker just to move map to selected list item
+                CrimeEventMarker crimeEventMarker = (CrimeEventMarker) adapter.getItemAtPosition(position);
+                behavior.setPeekHeight(200);
+                double latitude = Double.parseDouble(crimeEventMarker.getX());
+                double longitude = Double.parseDouble(crimeEventMarker.getY());
+                LatLng selectedListItem = new LatLng(latitude, longitude);
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(selectedListItem, 16));
+            }
+        });
+
 
         searchView = findViewById(R.id.sv_location);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -110,22 +129,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         Toast.makeText(MapsActivity.this, "No search results.", Toast.LENGTH_LONG).show();
                         return false;
                     }
-
                     Address address = addressList.get(0);
                     LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
                     int count = 50;
                     clearSearchMarkersAndCircles();
-                    for(CrimeEventMarker crimeEvent : crimeEventsList) {
-                        if(count <= 0) {
+                    for (CrimeEventMarker crimeEvent : crimeEventsList) {
+                        if (count <= 0) {
                             break;
                         }
                         try {
                             double latitude = Double.parseDouble(crimeEvent.getX());
                             double longitude = Double.parseDouble(crimeEvent.getY());
-                            if(LatLongDistance.distance(latitude, latLng.latitude, longitude, latLng.longitude) < 175) {
-                                LatLng marker = new LatLng(latitude,longitude);
+                            if (LatLongDistance.distance(latitude, latLng.latitude, longitude, latLng.longitude) < 175) {
+                                LatLng marker = new LatLng(latitude, longitude);
                                 mMap.setInfoWindowAdapter(new CrimeEventInfoWindowAdapter(crimeEvent, getLayoutInflater()));
-                                searchMarkers.add(mMap.addMarker(new MarkerOptions().position(marker)));
+                                searchMarkers.put(mMap.addMarker(new MarkerOptions().position(marker)), crimeEvent);
                                 searchRadius.add(mMap.addCircle(new CircleOptions()
                                         .center(marker)
                                         .radius(30)
@@ -133,11 +151,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                         .fillColor(0x100000FF)));
                                 count--;
                             }
-                        }catch(Exception e) {
-                          e.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
-                    searchMarkers.add(mMap.addMarker(new MarkerOptions().position(latLng).title(location)));
+                    ArrayList<CrimeEventMarker> list = new ArrayList<>(searchMarkers.values());
+                    CrimeEventListAdapter adapter = new CrimeEventListAdapter(MapsActivity.this, list);
+                    lvCrimeEventsSlideUp.setAdapter(adapter);
+                    searchMarkers.put(mMap.addMarker(new MarkerOptions().position(latLng).title(location)), null);
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
                 }
                 return true;
@@ -182,7 +203,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
-        }else {
+        } else {
             Log.d(TAG, "Location permissions denied.");
         }
     }
@@ -211,17 +232,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }.getType();
                 String line = reader.readLine();
                 crimeEventsList = gson.fromJson(line, type);
-                for(CrimeEventMarker crimeEvent : crimeEventsList) {
+                for (CrimeEventMarker crimeEvent : crimeEventsList) {
                     try {
                         UTM2Deg deg = new UTM2Deg(Double.parseDouble(crimeEvent.getX()), Double.parseDouble(crimeEvent.getY()));
                         crimeEvent.setY(deg.getLongitude() + "");
                         crimeEvent.setX(deg.getLatitude() + "");
-                    }catch(Exception e2) {
+                    } catch (Exception e2) {
                         e2.printStackTrace();
                         continue;
                     }
                 }
-            } catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return crimeEventsList;
@@ -238,11 +259,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * We need to remove every marker from the map before we do a search.
      */
     private void clearSearchMarkersAndCircles() {
-        for(Marker marker : searchMarkers) {
+        for (Marker marker : searchMarkers.keySet()) {
+
             marker.remove();
         }
         searchMarkers.clear();
-        for(Circle circle : searchRadius) {
+        for (Circle circle : searchRadius) {
             circle.remove();
         }
         searchRadius.clear();

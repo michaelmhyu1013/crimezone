@@ -2,6 +2,7 @@ package com.example.crimehelp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class CrimeEventListAdapter extends ArrayAdapter<CrimeEventMarker> {
@@ -37,15 +40,27 @@ public class CrimeEventListAdapter extends ArrayAdapter<CrimeEventMarker> {
 
         TextView crimeEventType = listViewItem.findViewById(R.id.crimeEventType);
         TextView crimeEventTime = listViewItem.findViewById(R.id.crimeEventTime);
-
+        try {
         CrimeEventMarker crimeEvent = crimeEventsList.get(position);
 
-        //System.out.println(toDoList);
+            crimeEventType.setText(crimeEvent.getTYPE());
 
-        crimeEventType.setText(crimeEvent.getTYPE());
-        crimeEventTime.setText(crimeEvent.getDAY() + " " + crimeEvent.getHOUR() + " " + crimeEvent.getMINUTE());
+            Date tvDate = new GregorianCalendar(Integer.parseInt(crimeEvent.getYEAR()),
+                    Integer.parseInt(crimeEvent.getMONTH()), Integer.parseInt(crimeEvent.getDAY()),
+                    Integer.parseInt(crimeEvent.getHOUR()), Integer.parseInt(crimeEvent.getMINUTE())).getTime();
+            String date = "" + tvDate;
+            crimeEventTime.setText(date);
+
+        } catch (Exception e) {
+            Log.e("ADAPTER ERROR", e.toString());
+            e.printStackTrace();
+        }
+
         return listViewItem;
     }
 
+    public CrimeEventMarker getItem(int position){
+        return crimeEventsList.get(position);
+    }
 
 }
