@@ -176,10 +176,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     num--;
                     UTM2Deg deg = new UTM2Deg(Double.parseDouble(crimeEvent.getX()),Double.parseDouble(crimeEvent.getY()));
-                    LatLng marker = new LatLng(deg.getLatitude(),deg.getLongitude());
-                    //mMap.addMarker(new MarkerOptions().position(marker));
+                    LatLng markerLatLng = new LatLng(deg.getLatitude(),deg.getLongitude());
+                    mMap.setInfoWindowAdapter(new CrimeEventInfoWindowAdapter(crimeEvent, getLayoutInflater()));
+                    mMap.addMarker(new MarkerOptions().position(markerLatLng));
                     mMap.addCircle(new CircleOptions()
-                            .center(marker)
+                            .center(markerLatLng)
                             .radius(250)
                             .strokeWidth(0f)
                             .fillColor(0x030000FF));
