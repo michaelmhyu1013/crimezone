@@ -1,6 +1,7 @@
 package com.example.crimehelp;
 
 import java.util.Arrays;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -109,5 +110,23 @@ public class CrimeEventMarker {
 
     public void setTYPE(String TYPE) {
         this.TYPE = TYPE;
+    }
+
+    @Override
+    public String toString() {
+        String tmp = "";
+        try{
+            tmp += getTYPE() + "~";
+            tmp += getHUNDRED_BLOCK() + "~";
+            tmp += getNEIGHBOURHOOD() + "~";
+            tmp += new GregorianCalendar(Integer.parseInt(getYEAR()),
+                    Integer.parseInt(getMONTH()), Integer.parseInt(getDAY()),
+                    Integer.parseInt(getHOUR()), Integer.parseInt(getMINUTE())).getTime();
+        }catch(Exception e) {
+            //We do append this so that if another method splits it will have the correct number of elements
+            tmp = "~~~";
+            e.printStackTrace();
+        }
+        return tmp;
     }
 }
