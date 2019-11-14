@@ -66,6 +66,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         searchMarkers = new ArrayList<>();
         searchRadius = new ArrayList<>();
 
+
         //bottom-sheet init
         CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.maps_activity);
         View bottomSheet = coordinatorLayout.findViewById(R.id.bottom_sheet);
@@ -124,8 +125,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             double longitude = Double.parseDouble(crimeEvent.getY());
                             if(LatLongDistance.distance(latitude, latLng.latitude, longitude, latLng.longitude) < 175) {
                                 LatLng marker = new LatLng(latitude,longitude);
-                                mMap.setInfoWindowAdapter(new CrimeEventInfoWindowAdapter(crimeEvent, getLayoutInflater()));
-                                searchMarkers.add(mMap.addMarker(new MarkerOptions().position(marker)));
+                                searchMarkers.add(mMap.addMarker(new MarkerOptions().position(marker).snippet(crimeEvent.toString())));
                                 searchRadius.add(mMap.addCircle(new CircleOptions()
                                         .center(marker)
                                         .radius(30)
@@ -182,6 +182,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
+            mMap.setInfoWindowAdapter(new CrimeEventInfoWindowAdapter(getLayoutInflater()));
         }else {
             Log.d(TAG, "Location permissions denied.");
         }
