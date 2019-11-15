@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/BreakandEnter"
+        app:actionViewClass = "android.widget.Switch"
+        android:title="Break and Enter Commercial">
+    </item>
+    <item
         android:id="@+id/switchMischief"
         app:actionViewClass = "android.widget.Switch"
         android:title="Mischief">

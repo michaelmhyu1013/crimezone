@@ -12,8 +12,10 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -86,6 +88,36 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         nav_view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.BreakandEnter:
+                        Switch s = (Switch)findViewById(R.id.BreakandEnter);
+                        if (!s.isChecked()) {
+                            s.setChecked(true);
+                        }
+                        else {
+                            s.setChecked(false);
+                            try {
+                                for (Marker marker : searchMarkers) {
+                                    if (marker != null)
+                                    {
+                                        String[] dataString =marker.getSnippet().split("~");
+                                        if(dataString[0].equalsIgnoreCase("Break and Enter Residential")
+                                                ||dataString[0].equalsIgnoreCase("Mischief") )
+                                        {
+                                            marker.setVisible(false);
+                                        }
+                                    }
+//                                    if (marker != null)
+//                                        Log.e("key", marker.getSnippet());
+                                }
+                            }
+                            catch(NullPointerException e)
+                            {
+                                System.out.print("NullPointerException caught");
+                            }
+                        }
+                        break;
+                }
                 return true;
             }
         });
