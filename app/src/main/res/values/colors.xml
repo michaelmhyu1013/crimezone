@@ -3,4 +3,10 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="Break">#FFF407</color>
+    <color name="Mischief">#DCAF40</color>
+    <color name="Offense">#0707FF</color>
+    <color name="OtherTheft">#FFD607</color>
+    <color name="Theft">#FF8307</color>
+    <color name="VehicleCollision">#F63636</color>
 </resources>

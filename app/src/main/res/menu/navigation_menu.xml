@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/BreakandEnter"
+        android:id="@+id/switchBreakandEnter"
         app:actionViewClass = "android.widget.Switch"
         android:title="Break and Enter Commercial">
     </item>
@@ -27,7 +27,7 @@
         android:title="Theft from Vehicle">
     </item>
     <item
-        android:id="@+id/switchTheftFromBicycle"
+        android:id="@+id/switchTheftOfBicycle"
         app:actionViewClass = "android.widget.Switch"
         android:title= "Theft of Bicycle">
     </item>
