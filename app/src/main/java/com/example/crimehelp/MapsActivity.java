@@ -916,19 +916,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public int getMarkerColor(String crimeType) {
         if (crimeType.contains("Break and Enter"))
             return getResources().getColor(R.color.Break);
-        if (crimeType.contains("Mischief"))
+        else if (crimeType.contains("Mischief"))
             return getResources().getColor(R.color.Mischief);
-        if (crimeType.contains("Offence Against a Person"))
+        else if (crimeType.contains("Offence Against a Person"))
             return getResources().getColor(R.color.Offense);
-        if (crimeType.contains("Other Theft"))
+        else if (crimeType.contains("Other Theft"))
             return getResources().getColor(R.color.OtherTheft);
-        if (crimeType.contains("Theft from Vehicle"))
+        else if (crimeType.contains("Theft from Vehicle"))
             return getResources().getColor(R.color.TheftFromVehicle);
-        if (crimeType.contains("Theft of Bicycle"))
+        else if (crimeType.contains("Theft of Bicycle"))
             return getResources().getColor(R.color.TheftOfBicycle);
-        if (crimeType.contains("Theft of Vehicle"))
+        else if (crimeType.contains("Theft of Vehicle"))
             return getResources().getColor(R.color.TheftOfVehicle);
-        if (crimeType.contains("Vehicle Collision"))
+        else if (crimeType.contains("Vehicle Collision"))
             return getResources().getColor(R.color.VehicleCollision);
         return Color.WHITE;
     }
@@ -977,7 +977,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.e("temp", "false");
             }
         }
-        if (crimeType.contains("Mischief")) {
+        else if (crimeType.contains("Mischief")) {
             if (filter.get("Mischief")!= null && filter.get("Mischief")) {
                 searchMarkers.get(searchMarkers.size()-1).setVisible(true);
                 searchRadius.get(searchRadius.size()-1).setVisible(true);
@@ -987,7 +987,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 searchRadius.get(searchRadius.size()-1).setVisible(false);
             }
         }
-        if (crimeType.contains("Offense")) {
+        else if (crimeType.contains("Offense")) {
             if (filter.get("Offense")!= null && filter.get("Offense")) {
                 searchMarkers.get(searchMarkers.size()-1).setVisible(true);
                 searchRadius.get(searchRadius.size()-1).setVisible(true);
@@ -997,7 +997,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 searchRadius.get(searchRadius.size()-1).setVisible(false);
             }
         }
-        if (crimeType.contains("Other Theft")) {
+        else if (crimeType.contains("Other Theft")) {
             if (filter.get("Other Theft")!= null && filter.get("Other Theft")) {
                 searchMarkers.get(searchMarkers.size()-1).setVisible(true);
                 searchRadius.get(searchRadius.size()-1).setVisible(true);
@@ -1007,7 +1007,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 searchRadius.get(searchRadius.size()-1).setVisible(false);
             }
         }
-        if (crimeType.contains("Theft from Vehicle")) {
+        else if (crimeType.contains("Theft from Vehicle")) {
             if (filter.get("Theft from Vehicle")!= null && filter.get("Theft from Vehicle")) {
                 searchMarkers.get(searchMarkers.size()-1).setVisible(true);
                 searchRadius.get(searchRadius.size()-1).setVisible(true);
@@ -1017,7 +1017,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 searchRadius.get(searchRadius.size()-1).setVisible(false);
             }
         }
-        if (crimeType.contains("Theft of Bicycle")) {
+        else if (crimeType.contains("Theft of Bicycle")) {
             if (filter.get("Theft Of Bicycle")!= null && filter.get("Theft Of Bicycle")) {
                 searchMarkers.get(searchMarkers.size()-1).setVisible(true);
                 searchRadius.get(searchRadius.size()-1).setVisible(true);
@@ -1027,7 +1027,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 searchRadius.get(searchRadius.size()-1).setVisible(false);
             }
         }
-        if (crimeType.contains("Theft of Vehicle")) {
+        else if (crimeType.contains("Theft of Vehicle")) {
             if (filter.get("Theft Of Vehicle")!= null && filter.get("Theft Of Vehicle")) {
                 searchMarkers.get(searchMarkers.size()-1).setVisible(true);
                 searchRadius.get(searchRadius.size()-1).setVisible(true);
@@ -1037,7 +1037,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 searchRadius.get(searchRadius.size()-1).setVisible(false);
             }
         }
-        if (crimeType.contains("Vehicle Collision")) {
+        else if (crimeType.contains("Vehicle Collision")) {
             if (filter.get("Vehicle Collision")!= null && filter.get("Vehicle Collision")) {
                 searchMarkers.get(searchMarkers.size()-1).setVisible(true);
                 searchRadius.get(searchRadius.size()-1).setVisible(true);
