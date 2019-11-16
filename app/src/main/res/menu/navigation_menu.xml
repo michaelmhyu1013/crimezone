@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/switchBreakandEnter"
+        app:actionViewClass = "android.widget.Switch"
+        android:title="@string/break_and_enter">
+    </item>
+    <item
+        android:id="@+id/switchMischief"
+        app:actionViewClass = "android.widget.Switch"
+        android:title="@string/mischief">
+    </item>
+    <item
+        android:id="@+id/switchOffense"
+        app:actionViewClass = "android.widget.Switch"
+        android:title="@string/offense_against_a_person">
+    </item>
+    <item
+        android:id="@+id/switchOtherTheft"
+        app:actionViewClass = "android.widget.Switch"
+        android:title="@string/other_theft">
+    </item>
+    <item
+        android:id="@+id/switchTheftFromVehicle"
+        app:actionViewClass = "android.widget.Switch"
+        android:title="@string/theft_from_vehicle">
+    </item>
+    <item
+        android:id="@+id/switchTheftOfBicycle"
+        app:actionViewClass = "android.widget.Switch"
+        android:title= "@string/theft_of_bicycle">
+    </item>
+    <item
+        android:id="@+id/switchTheftOfVehicle"
+        app:actionViewClass = "android.widget.Switch"
+        android:title= "@string/theft_of_vehicle">
+    </item>
+    <item
+        android:id="@+id/switchVehicleCollision"
+        app:actionViewClass = "android.widget.Switch"
+        android:title= "@string/vehicle_collision">
+    </item>
+</menu>
