@@ -51,8 +51,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = "MainActivity";
@@ -452,6 +455,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         Toast.makeText(MapsActivity.this, "No search results.", Toast.LENGTH_LONG).show();
                         return false;
                     }
+//                    searchView.clearFocus();
                     Address address = addressList.get(0);
                     LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
                     int count = 50;
@@ -481,7 +485,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             e.printStackTrace();
                         }
                     }
-                    ArrayList<Marker> list = new ArrayList<>(searchMarkers);
+                    List<Marker> list = new ArrayList<>(searchMarkers);
+                    list = sortListIntoBuckets(list);
                     CrimeEventMarkerListAdapter adapter = new CrimeEventMarkerListAdapter(MapsActivity.this, list);
                     lvCrimeEventsSlideUp.setAdapter(adapter);
                     searchMarkers.add(mMap.addMarker(new MarkerOptions().position(latLng).title(location)));
@@ -545,6 +550,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         protected void onPostExecute(List<CrimeEventMarker> result) {
             //TODO: maybe we can get current location and plot crime points for current location
+
             Log.d(TAG, "Completed async task");
         }
 
@@ -737,5 +743,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             return true;
         }
         return super.onOptionsItemSelected(item);
+    private List<Marker> sortListIntoBuckets(List<Marker> list) {
+        Map<String, List<Marker>> cumulativeMap = new TreeMap<>();
+        List<Marker> returnList = new ArrayList<>();
+        for (Marker marker : list) {
+            try {
+                String[] crimeData = marker.getSnippet().split("~");
+                if (!cumulativeMap.containsKey(crimeData[0])) {
+                    cumulativeMap.put(crimeData[0], new ArrayList<Marker>());
+                }
+                cumulativeMap.get(crimeData[0]).add(marker);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
+        }
+        for (List<Marker> typeList : cumulativeMap.values()) {
+            returnList.addAll(typeList);
+        }
+        return returnList;
     }
 }
