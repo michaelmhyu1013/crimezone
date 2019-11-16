@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -52,6 +53,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final String TAG = "MainActivity";
     private GoogleMap mMap;
     private SearchView searchView;
+    private EditText etMaxRadius;
+    private EditText etMaxItems;
     private SupportMapFragment mapFragment;
     private List<CrimeEventMarker> crimeEventsList;
     ListView lvCrimeEventsSlideUp;
@@ -114,8 +117,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
         searchView = findViewById(R.id.sv_location);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        etMaxItems = findViewById(R.id.edit_max_marker_count);
+        etMaxRadius = findViewById(R.id.edit_max_radius);
+        final int maxItems = Integer.parseInt(etMaxItems.getText().toString());
+        final int maxRadius = Integer.parseInt(etMaxRadius.getText().toString());
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 String location = searchView.getQuery().toString();
@@ -135,7 +142,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                    searchView.clearFocus();
                     Address address = addressList.get(0);
                     LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                    int count = 50;
+//                    int count = 50;
+                    int count = maxItems;
                     clearSearchMarkersAndCircles();
                     for (CrimeEventMarker crimeEvent : crimeEventsList) {
                         if (count <= 0) {
@@ -144,7 +152,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         try {
                             double latitude = Double.parseDouble(crimeEvent.getX());
                             double longitude = Double.parseDouble(crimeEvent.getY());
-                            if (LatLongDistance.distance(latitude, latLng.latitude, longitude, latLng.longitude) < 175) {
+                            if (LatLongDistance.distance(latitude, latLng.latitude, longitude, latLng.longitude) < maxRadius) {
                                 LatLng marker = new LatLng(latitude, longitude);
                                 searchMarkers.add(mMap.addMarker(new MarkerOptions().position(marker).snippet(crimeEvent.toString())));
                                 searchRadius.add(mMap.addCircle(new CircleOptions()
