@@ -51,6 +51,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -66,6 +67,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private List<Circle> searchRadius;
     private DrawerLayout dl;
     private ActionBarDrawerToggle abdt;
+    public HashMap<String,Boolean> filter;
     //private Marker currentLocationMarker;
 
 
@@ -79,33 +81,58 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
         searchMarkers = new ArrayList<>();
         searchRadius = new ArrayList<>();
+        filter = new HashMap<String,Boolean>();
+        filter.put("Break and Enter", false);
+        filter.put("Mischief", false);
+        filter.put("Offence", false);
+        filter.put("Other Theft", false);
+        filter.put("Theft from Vehicle", false);
+        filter.put("Theft Of Vehicle", false);
+        filter.put("Theft Of Bicycle", false);
+        filter.put("Vehicle Collision", false);
+
 
         dl = (DrawerLayout)findViewById(R.id.dl);
         abdt = new ActionBarDrawerToggle(this,dl,R.string.Open, R.string.Close);
         abdt.setDrawerIndicatorEnabled(true);
         dl.addDrawerListener(abdt);
         abdt.syncState();
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         NavigationView nav_view = (NavigationView)findViewById(R.id.nav_view);
 
         nav_view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                String ID = "" + item.getItemId();
                 Switch s;
                 switch (item.getItemId()) {
                     case R.id.switchBreakandEnter:
                         s = (Switch)findViewById(R.id.switchBreakandEnter);
                         if (!s.isChecked()) {
                             s.setChecked(true);
-                        }
-                        else {
-                            s.setChecked(false);
+                            filter.put("Break and Enter", true);
                             try {
                                 for (Marker marker : searchMarkers) {
                                     if (marker != null)
                                     {
-                                        setVisibility(marker, "Break and Enter Residential");
+                                        setVisibilityTrue(marker, "Break and Enter");
+
+                                    }
+                                }
+                            }
+                            catch(NullPointerException e)
+                            {
+                                System.out.print("NullPointerException caught");
+                            }
+                        }
+                        else {
+                            s.setChecked(false);
+                                        filter.put("Break and Enter", false);
+                            try {
+                                for (Marker marker : searchMarkers) {
+                                    if (marker != null)
+                                    {
+                                        setVisibilityFalse(marker, "Break and Enter");
+
                                     }
                                 }
                             }
@@ -119,14 +146,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         s = (Switch)findViewById(R.id.switchMischief);
                         if (!s.isChecked()) {
                             s.setChecked(true);
-                        }
-                        else {
-                            s.setChecked(false);
+                                        filter.put("Mischief", true);
                             try {
                                 for (Marker marker : searchMarkers) {
                                     if (marker != null)
                                     {
-                                        setVisibility(marker, "Mischief");
+                                        setVisibilityTrue(marker, "Mischief");
+                                    }
+                                }
+                            }
+                            catch(NullPointerException e)
+                            {
+                                System.out.print("NullPointerException caught");
+                            }
+                        }
+                        else {
+                            s.setChecked(false);
+                                        filter.put("Mischief", false);
+                            try {
+                                for (Marker marker : searchMarkers) {
+                                    if (marker != null)
+                                    {
+                                        setVisibilityFalse(marker, "Mischief");
                                     }
                                 }
                             }
@@ -140,14 +181,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         s = (Switch)findViewById(R.id.switchOffense);
                         if (!s.isChecked()) {
                             s.setChecked(true);
-                        }
-                        else {
-                            s.setChecked(false);
+                                        filter.put("Offense", true);
                             try {
                                 for (Marker marker : searchMarkers) {
                                     if (marker != null)
                                     {
-                                        setVisibility(marker, "Offense");
+                                        setVisibilityTrue(marker, "Offense");
+                                    }
+                                }
+                            }
+                            catch(NullPointerException e)
+                            {
+                                System.out.print("NullPointerException caught");
+                            }
+                        }
+                        else {
+                            s.setChecked(false);
+                                        filter.put("Offense", false);
+                            try {
+                                for (Marker marker : searchMarkers) {
+                                    if (marker != null)
+                                    {
+                                        setVisibilityFalse(marker, "Offense");
                                     }
                                 }
                             }
@@ -161,14 +216,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         s = (Switch)findViewById(R.id.switchOtherTheft);
                         if (!s.isChecked()) {
                             s.setChecked(true);
-                        }
-                        else {
-                            s.setChecked(false);
+                                        filter.put("Other Theft", true);
                             try {
                                 for (Marker marker : searchMarkers) {
                                     if (marker != null)
                                     {
-                                        setVisibility(marker, "Other Theft");
+                                        setVisibilityTrue(marker, "Other Theft");
+                                    }
+                                }
+                            }
+                            catch(NullPointerException e)
+                            {
+                                System.out.print("NullPointerException caught");
+                            }
+                        }
+                        else {
+                            s.setChecked(false);
+                                        filter.put("Other Theft", false);
+                            try {
+                                for (Marker marker : searchMarkers) {
+                                    if (marker != null)
+                                    {
+                                        setVisibilityFalse(marker, "Other Theft");
                                     }
                                 }
                             }
@@ -182,14 +251,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         s = (Switch)findViewById(R.id.switchTheftFromVehicle);
                         if (!s.isChecked()) {
                             s.setChecked(true);
-                        }
-                        else {
-                            s.setChecked(false);
+                                        filter.put("Theft from Vehicle", true);
                             try {
                                 for (Marker marker : searchMarkers) {
                                     if (marker != null)
                                     {
-                                        setVisibility(marker, "Theft from Vehicle");
+                                        setVisibilityTrue(marker, "Theft from Vehicle");
+                                    }
+                                }
+                            }
+                            catch(NullPointerException e)
+                            {
+                                System.out.print("NullPointerException caught");
+                            }
+                        }
+                        else {
+                            s.setChecked(false);
+                                        filter.put("Theft from Vehicle", false);
+                            try {
+                                for (Marker marker : searchMarkers) {
+                                    if (marker != null)
+                                    {
+                                        setVisibilityFalse(marker, "Theft from Vehicle");
                                     }
                                 }
                             }
@@ -203,14 +286,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         s = (Switch)findViewById(R.id.switchTheftOfBicycle);
                         if (!s.isChecked()) {
                             s.setChecked(true);
-                        }
-                        else {
-                            s.setChecked(false);
+                                        filter.put("Theft of Bicycle", true);
                             try {
                                 for (Marker marker : searchMarkers) {
                                     if (marker != null)
                                     {
-                                        setVisibility(marker, "Theft Of Bicycle");
+                                        setVisibilityTrue(marker, "Theft of Bicycle");
+                                    }
+                                }
+                            }
+                            catch(NullPointerException e)
+                            {
+                                System.out.print("NullPointerException caught");
+                            }
+                        }
+                        else {
+                            s.setChecked(false);
+                                        filter.put("Theft of Bicycle", false);
+                            try {
+                                for (Marker marker : searchMarkers) {
+                                    if (marker != null)
+                                    {
+                                        setVisibilityFalse(marker, "Theft of Bicycle");
                                     }
                                 }
                             }
@@ -222,16 +319,30 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         break;
                     case R.id.switchTheftOfVehicle:
                         s = (Switch)findViewById(R.id.switchTheftOfVehicle);
+                                        filter.put("Theft of Vehicle", true);
                         if (!s.isChecked()) {
                             s.setChecked(true);
-                        }
-                        else {
-                            s.setChecked(false);
                             try {
                                 for (Marker marker : searchMarkers) {
                                     if (marker != null)
                                     {
-                                        setVisibility(marker, "Theft Of Vehicle");
+                                        setVisibilityTrue(marker, "Theft of Vehicle");
+                                    }
+                                }
+                            }
+                            catch(NullPointerException e)
+                            {
+                                System.out.print("NullPointerException caught");
+                            }
+                        }
+                        else {
+                            s.setChecked(false);
+                                        filter.put("Theft of Vehicle", false);
+                            try {
+                                for (Marker marker : searchMarkers) {
+                                    if (marker != null)
+                                    {
+                                        setVisibilityFalse(marker, "Theft of Vehicle");
                                     }
                                 }
                             }
@@ -241,18 +352,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             }
                         }
                         break;
-                    case R.id.switchVehicleCollisionFatal:
-                        s = (Switch)findViewById(R.id.switchVehicleCollisionFatal);
+                    case R.id.switchVehicleCollision:
+                        s = (Switch)findViewById(R.id.switchVehicleCollision);
                         if (!s.isChecked()) {
                             s.setChecked(true);
-                        }
-                        else {
-                            s.setChecked(false);
+                                        filter.put("Vehicle Collision", true);
                             try {
                                 for (Marker marker : searchMarkers) {
                                     if (marker != null)
                                     {
-                                        setVisibility(marker, "Vehicle Collision or Pedestrian Struck (with Fatality)");
+                                        setVisibilityTrue(marker, "Vehicle Collision");
                                     }
                                 }
                             }
@@ -261,19 +370,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 System.out.print("NullPointerException caught");
                             }
                         }
-                        break;
-                    case R.id.switchVehicleCollisionInjury:
-                        s = (Switch)findViewById(R.id.switchVehicleCollisionInjury);
-                        if (!s.isChecked()) {
-                            s.setChecked(true);
-                        }
                         else {
                             s.setChecked(false);
+                                        filter.put("Vehicle Collision", false);
                             try {
                                 for (Marker marker : searchMarkers) {
                                     if (marker != null)
                                     {
-                                        setVisibility(marker, "Vehicle Collision or Pedestrian Struck (with Injury)");
+                                        setVisibilityFalse(marker, "Vehicle Collision");
                                     }
                                 }
                             }
@@ -370,6 +474,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                         .strokeWidth(0.5f)
                                         .fillColor(Color.parseColor(strColor))));
                                 count--;
+                                setVisibilityOfCurrentMarkerandCircle(crimeEvent.getTYPE());
+
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -491,7 +597,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         searchRadius.clear();
     }
     public int getMarkerColor(String crimeType) {
-        if (crimeType.contains("Break and Enter Residential"))
+        if (crimeType.contains("Break and Enter"))
             return getResources().getColor(R.color.Break);
         if (crimeType.contains("Mischief"))
             return getResources().getColor(R.color.Mischief);
@@ -500,12 +606,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (crimeType.contains("Other Theft"))
             return getResources().getColor(R.color.OtherTheft);
         if (crimeType.contains("Theft from Vehicle"))
-            return getResources().getColor(R.color.Theft);
+            return getResources().getColor(R.color.TheftFromVehicle);
         if (crimeType.contains("Theft of Bicycle"))
-            return getResources().getColor(R.color.Theft);
+            return getResources().getColor(R.color.TheftOfBicycle);
         if (crimeType.contains("Theft of Vehicle"))
-            return getResources().getColor(R.color.Theft);
-        if (crimeType.contains("Vehicle Collision or Pedestrian Struck"))
+            return getResources().getColor(R.color.TheftOfVehicle);
+        if (crimeType.contains("Vehicle Collision"))
             return getResources().getColor(R.color.VehicleCollision);
         return Color.WHITE;
     }
@@ -516,15 +622,120 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return BitmapDescriptorFactory.defaultMarker(hsv[0]);
     }
 
-    public void setVisibility(Marker marker, String crimeType) {
+    public void setVisibilityFalse(Marker marker, String crimeType) {
         String[] dataString = marker.getSnippet().split("~");
         if(dataString[0].contains(crimeType)) {
             marker.setVisible(false);
         }
         for (Circle circle : searchRadius) {
-            if (circle.getCenter().latitude == marker.getPosition().latitude && circle.getCenter().longitude == marker.getPosition().longitude) {
+            String strColor = String.format("#%08X", 0x27FFFFFF & getMarkerColor(crimeType));
+            if (circle.getFillColor() == Color.parseColor(strColor)) {
                  circle.setVisible(false);
             }
         }
+    }
+
+    public void setVisibilityTrue(Marker marker, String crimeType) {
+        String[] dataString = marker.getSnippet().split("~");
+        if(dataString[0].contains(crimeType)) {
+            marker.setVisible(true);
+        }
+        for (Circle circle : searchRadius) {
+            String strColor = String.format("#%08X", 0x27FFFFFF & getMarkerColor(crimeType));
+            if (circle.getFillColor() == Color.parseColor(strColor)) {
+                circle.setVisible(true);
+            }
+        }
+    }
+
+    public void setVisibilityOfCurrentMarkerandCircle(String crimeType) {
+        if (crimeType.contains("Break and Enter")) {
+            if (filter.get("Break and Enter")!= null && filter.get("Break and Enter")) {
+                searchMarkers.get(searchMarkers.size()-1).setVisible(true);
+                searchRadius.get(searchRadius.size()-1).setVisible(true);
+            }
+            else {
+                searchMarkers.get(searchMarkers.size()-1).setVisible(false);
+                searchRadius.get(searchRadius.size()-1).setVisible(false);
+                Log.e("temp", "false");
+            }
+        }
+        if (crimeType.contains("Mischief")) {
+            if (filter.get("Mischief")!= null && filter.get("Mischief")) {
+                searchMarkers.get(searchMarkers.size()-1).setVisible(true);
+                searchRadius.get(searchRadius.size()-1).setVisible(true);
+            }
+            else {
+                searchMarkers.get(searchMarkers.size()-1).setVisible(false);
+                searchRadius.get(searchRadius.size()-1).setVisible(false);
+            }
+        }
+        if (crimeType.contains("Offense")) {
+            if (filter.get("Offense")!= null && filter.get("Offense")) {
+                searchMarkers.get(searchMarkers.size()-1).setVisible(true);
+                searchRadius.get(searchRadius.size()-1).setVisible(true);
+            }
+            else {
+                searchMarkers.get(searchMarkers.size()-1).setVisible(false);
+                searchRadius.get(searchRadius.size()-1).setVisible(false);
+            }
+        }
+        if (crimeType.contains("Offense")) {
+            if (filter.get("Offense")!= null && filter.get("Offense")) {
+                searchMarkers.get(searchMarkers.size()-1).setVisible(true);
+                searchRadius.get(searchRadius.size()-1).setVisible(true);
+            }
+            else {
+                searchMarkers.get(searchMarkers.size()-1).setVisible(false);
+                searchRadius.get(searchRadius.size()-1).setVisible(false);
+            }
+        }
+        if (crimeType.contains("Theft from Vehicle")) {
+            if (filter.get("Theft from Vehicle")!= null && filter.get("Theft from Vehicle")) {
+                searchMarkers.get(searchMarkers.size()-1).setVisible(true);
+                searchRadius.get(searchRadius.size()-1).setVisible(true);
+            }
+            else {
+                searchMarkers.get(searchMarkers.size()-1).setVisible(false);
+                searchRadius.get(searchRadius.size()-1).setVisible(false);
+            }
+        }
+        if (crimeType.contains("Theft of Bicycle")) {
+            if (filter.get("Theft Of Bicycle")!= null && filter.get("Theft Of Bicycle")) {
+                searchMarkers.get(searchMarkers.size()-1).setVisible(true);
+                searchRadius.get(searchRadius.size()-1).setVisible(true);
+            }
+            else {
+                searchMarkers.get(searchMarkers.size()-1).setVisible(false);
+                searchRadius.get(searchRadius.size()-1).setVisible(false);
+            }
+        }
+        if (crimeType.contains("Theft of Vehicle")) {
+            if (filter.get("Theft Of Vehicle")!= null && filter.get("Theft Of Vehicle")) {
+                searchMarkers.get(searchMarkers.size()-1).setVisible(true);
+                searchRadius.get(searchRadius.size()-1).setVisible(true);
+            }
+            else {
+                searchMarkers.get(searchMarkers.size()-1).setVisible(false);
+                searchRadius.get(searchRadius.size()-1).setVisible(false);
+            }
+        }
+        if (crimeType.contains("Vehicle Collision")) {
+            if (filter.get("Vehicle Collision")!= null && filter.get("Vehicle Collision")) {
+                searchMarkers.get(searchMarkers.size()-1).setVisible(true);
+                searchRadius.get(searchRadius.size()-1).setVisible(true);
+            }
+            else {
+                searchMarkers.get(searchMarkers.size()-1).setVisible(false);
+                searchRadius.get(searchRadius.size()-1).setVisible(false);
+            }
+        }
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (abdt.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

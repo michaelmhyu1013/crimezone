@@ -13,4 +13,13 @@
     <string name="crime_image">Crime Image</string>
     <string name="Open">NavBar</string>
     <string name="Close">NavBar</string>
+    <string name="break_and_enter">Break and Enter</string>
+    <string name="mischief">Mischief</string>
+    <string name="offense_against_a_person">Offense Against a Person</string>
+    <string name="other_theft">Other Theft</string>
+    <string name="theft_from_vehicle">Theft from Vehicle</string>
+    <string name="theft_of_bicycle">Theft of Bicycle</string>
+    <string name="theft_of_vehicle">Theft of Vehicle</string>
+    <string name="vehicle_collision">Vehicle Collision</string>
+
 </resources>

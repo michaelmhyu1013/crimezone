@@ -4,46 +4,41 @@
     <item
         android:id="@+id/switchBreakandEnter"
         app:actionViewClass = "android.widget.Switch"
-        android:title="Break and Enter Commercial">
+        android:title="@string/break_and_enter">
     </item>
     <item
         android:id="@+id/switchMischief"
         app:actionViewClass = "android.widget.Switch"
-        android:title="Mischief">
+        android:title="@string/mischief">
     </item>
     <item
         android:id="@+id/switchOffense"
         app:actionViewClass = "android.widget.Switch"
-        android:title="Offense Against a Person">
+        android:title="@string/offense_against_a_person">
     </item>
     <item
         android:id="@+id/switchOtherTheft"
         app:actionViewClass = "android.widget.Switch"
-        android:title="Other Theft">
+        android:title="@string/other_theft">
     </item>
     <item
         android:id="@+id/switchTheftFromVehicle"
         app:actionViewClass = "android.widget.Switch"
-        android:title="Theft from Vehicle">
+        android:title="@string/theft_from_vehicle">
     </item>
     <item
         android:id="@+id/switchTheftOfBicycle"
         app:actionViewClass = "android.widget.Switch"
-        android:title= "Theft of Bicycle">
+        android:title= "@string/theft_of_bicycle">
     </item>
     <item
         android:id="@+id/switchTheftOfVehicle"
         app:actionViewClass = "android.widget.Switch"
-        android:title= "Theft of Vehicle">
+        android:title= "@string/theft_of_vehicle">
     </item>
     <item
-        android:id="@+id/switchVehicleCollisionFatal"
+        android:id="@+id/switchVehicleCollision"
         app:actionViewClass = "android.widget.Switch"
-        android:title= "Vehicle Collision (with Fatality)">
-    </item>
-    <item
-        android:id="@+id/switchVehicleCollisionInjury"
-        app:actionViewClass = "android.widget.Switch"
-        android:title= "Vehicle Collision (with Injury)">
+        android:title= "@string/vehicle_collision">
     </item>
 </menu>

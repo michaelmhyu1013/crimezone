@@ -7,6 +7,8 @@
     <color name="Mischief">#DCAF40</color>
     <color name="Offense">#0707FF</color>
     <color name="OtherTheft">#FFD607</color>
-    <color name="Theft">#FF8307</color>
-    <color name="VehicleCollision">#F63636</color>
+    <color name="TheftFromVehicle">#FF8307</color>
+    <color name="TheftOfVehicle">#FFA07A</color>
+    <color name="TheftOfBicycle">#E9967A</color>
+    <color name="VehicleCollision">#D81B60</color>
 </resources>
