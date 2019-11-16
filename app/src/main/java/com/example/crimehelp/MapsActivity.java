@@ -743,6 +743,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
     private List<Marker> sortListIntoBuckets(List<Marker> list) {
         Map<String, List<Marker>> cumulativeMap = new TreeMap<>();
         List<Marker> returnList = new ArrayList<>();
