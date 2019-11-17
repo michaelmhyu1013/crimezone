@@ -1127,7 +1127,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private class readAllCrimeDataTask extends AsyncTask<Void, Void, List<CrimeEventMarker>> {
 
         protected void onPostExecute(List<CrimeEventMarker> result) {
-
+            // This will ensure the markers are created the first time.
+            // We only need to do this once.
+            mLastLocation = new Location("TriggerCrimeMarkerGenerationFirstTime");
             LocationCallback mLocationCallback = new LocationCallback() {
                 @Override
                 public void onLocationResult(LocationResult locationResult) {
@@ -1137,7 +1139,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             //The last location in the list is the newest
                             Location location = locationList.get(locationList.size() - 1);
                             Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
-                            if (LatLongDistance.distance(location.getLatitude(), mLastLocation.getLongitude(), location.getLongitude(), mLastLocation.getLongitude()) < 75) {
+                            if (LatLongDistance.distance(location.getLatitude(), mLastLocation.getLatitude(), location.getLongitude(), mLastLocation.getLongitude()) < 75) {
                                 return;
                             }else {
                                 mLastLocation = location;
@@ -1448,6 +1450,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 addressList = geocoder.getFromLocationName(location, 1);
             } catch (IOException e) {
                 e.printStackTrace();
+                return latLng;
             }
             if (addressList.size() < 1) {
                 Toast.makeText(MapsActivity.this, "No search results.", Toast.LENGTH_LONG).show();
@@ -1489,7 +1492,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             markers.add(mMap.addMarker(new MarkerOptions().position(latLng)));
             return true;
         }
-
         private void createCrimeEventSlideUp(List<Marker> markers) {
             List<Marker> list = new ArrayList<>(markers);
             list = sortListIntoBuckets(list);
