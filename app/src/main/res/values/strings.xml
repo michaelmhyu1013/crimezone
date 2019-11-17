@@ -12,4 +12,54 @@
     <string name="crime_time">Crime Time</string>
     <string name="crime_image">Crime Image</string>
     <string name="max_number_of_markers">Max number of markers</string>
+    <string name="Open">NavBar</string>
+    <string name="Close">NavBar</string>
+    <string name="break_and_enter">Break and Enter</string>
+    <string name="mischief">Mischief</string>
+    <string name="offense_against_a_person">Offense Against a Person</string>
+    <string name="other_theft">Other Theft</string>
+    <string name="theft_from_vehicle">Theft from Vehicle</string>
+    <string name="theft_of_bicycle">Theft of Bicycle</string>
+    <string name="theft_of_vehicle">Theft of Vehicle</string>
+    <string name="vehicle_collision">Vehicle Collision</string>
+    <string name="_175">175</string>
+    <string name="max_marker_count_50">50</string>
+
+    <string-array name="max_counts">
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>25</item>
+        <item>30</item>
+        <item>35</item>
+        <item>40</item>
+        <item>45</item>
+        <item>50</item>
+        <item>55</item>
+        <item>60</item>
+        <item>65</item>
+        <item>70</item>
+        <item>75</item>
+        <item>80</item>
+    </string-array>
+
+    <string-array name="radii">
+        <item>25</item>
+        <item>50</item>
+        <item>75</item>
+        <item>100</item>
+        <item>125</item>
+        <item>150</item>
+        <item>175</item>
+        <item>200</item>
+        <item>225</item>
+        <item>250</item>
+        <item>275</item>
+        <item>300</item>
+        <item>325</item>
+        <item>350</item>
+        <item>375</item>
+        <item>400</item>
+    </string-array>
 </resources>

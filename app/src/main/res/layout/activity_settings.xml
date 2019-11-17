@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".SettingsActivity"
     android:rowCount="10"
+    android:id="@+id/settings_page"
     android:layout_margin="20dp"
     android:columnCount="1">
 
@@ -31,22 +32,26 @@
     <GridLayout
         android:columnCount="2"
         android:layout_marginTop="20dp">
-        <EditText
+        <Spinner
             android:id="@+id/edit_max_radius"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
+            android:text="@string/_175"
+            android:entries="@array/radii"
             android:inputType="number" />
         <TextView
             android:id="@+id/tv_radius"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/alert_in_km" />
-        <EditText
+        <Spinner
             android:id="@+id/edit_max_marker_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
+            android:text="@string/max_marker_count_50"
+            android:entries="@array/max_counts"
             android:inputType="number" />
         <TextView
             android:id="@+id/tv_max_marker_count"
