@@ -37,7 +37,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:text="@string/_175"
             android:entries="@array/radii"
             android:inputType="number" />
         <TextView
@@ -50,7 +49,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:text="@string/max_marker_count_50"
             android:entries="@array/max_counts"
             android:inputType="number" />
         <TextView
