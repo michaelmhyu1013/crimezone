@@ -2,6 +2,7 @@ package com.example.crimehelp;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
@@ -14,8 +15,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
@@ -54,7 +53,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,18 +73,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private List<Circle> searchRadius;
     private DrawerLayout dl;
     private ActionBarDrawerToggle abdt;
+    private SharedPreferences sp;
     public HashMap<String,Boolean> filter;
     //private Marker currentLocationMarker;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        sp = getSharedPreferences("SavedValues", MODE_PRIVATE);
+
         crimeEventsList = new ArrayList<>();
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        mapFragment.setRetainInstance(true);
         searchMarkers = new ArrayList<>();
         searchRadius = new ArrayList<>();
         filter = new HashMap<String,Boolean>();
@@ -446,13 +447,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         etMaxItems = settingsView.findViewById(R.id.edit_max_marker_count);
         etMaxRadius = settingsView.findViewById(R.id.edit_max_radius);
 
+        sp = getSharedPreferences("Settings", 0);
+
+        final int maxItems = sp.getInt("items", 50);
+        final int maxRadius = sp.getInt("radius", 175);
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 String location = searchView.getQuery().toString();
                 List<Address> addressList = new ArrayList<>();
-                final int maxItems = Integer.parseInt(etMaxItems.getSelectedItem().toString());
-                final int maxRadius = Integer.parseInt(etMaxRadius.getSelectedItem().toString());
 
                 if (!location.equals("")) {
                     Geocoder geocoder = new Geocoder(MapsActivity.this);
