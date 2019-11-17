@@ -10,5 +10,5 @@
     <color name="TheftFromVehicle">#FF8307</color>
     <color name="TheftOfVehicle">#FFA07A</color>
     <color name="TheftOfBicycle">#E9967A</color>
-    <color name="VehicleCollision">#D81B60</color>
+    <color name="VehicleCollision">#3D4849</color>
 </resources>
