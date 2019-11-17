@@ -1,6 +1,7 @@
 package com.example.crimehelp;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -8,12 +9,13 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Switch;
@@ -21,12 +23,17 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -51,7 +58,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,12 +72,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     ListView lvCrimeEventsSlideUp;
     private BottomSheetBehavior sheetBehavior;
     private FusedLocationProviderClient fusedLocationClient;
-    private ArrayList<Marker> searchMarkers;
+    private List<Marker> currentLocationMarkers;
+    private List<Circle> currentLocationRadius;
+    private List<Marker> searchMarkers;
+    private LocationRequest mLocationRequest;
+    private Marker mCurrLocationMarker;
+    private Location mLastLocation;
     private List<Circle> searchRadius;
     private DrawerLayout dl;
     private ActionBarDrawerToggle abdt;
     public HashMap<String,Boolean> filter;
-    //private Marker currentLocationMarker;
 
 
     @Override
@@ -84,6 +94,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
         searchMarkers = new ArrayList<>();
         searchRadius = new ArrayList<>();
+        currentLocationMarkers = new ArrayList<>();
+        currentLocationRadius = new ArrayList<>();
         filter = new HashMap<String,Boolean>();
         filter.put("Break and Enter", false);
         filter.put("Mischief", false);
@@ -441,57 +453,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                String location = searchView.getQuery().toString();
-                List<Address> addressList = new ArrayList<>();
-
-                if (!location.equals("")) {
-                    Geocoder geocoder = new Geocoder(MapsActivity.this);
-                    try {
-                        addressList = geocoder.getFromLocationName(location, 1);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    if (addressList.size() < 1) {
-                        Toast.makeText(MapsActivity.this, "No search results.", Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-//                    searchView.clearFocus();
-                    Address address = addressList.get(0);
-                    LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                    int count = 50;
-                    clearSearchMarkersAndCircles();
-                    for (CrimeEventMarker crimeEvent : crimeEventsList) {
-                        if (count <= 0) {
-                            break;
-                        }
-                        try {
-                            double latitude = Double.parseDouble(crimeEvent.getX());
-                            double longitude = Double.parseDouble(crimeEvent.getY());
-                            if (LatLongDistance.distance(latitude, latLng.latitude, longitude, latLng.longitude) < 175) {
-                                LatLng marker = new LatLng(latitude, longitude);
-                                int color = getMarkerColor(crimeEvent.getTYPE());
-                                String strColor = String.format("#%08X", 0x27FFFFFF & color);
-                                searchMarkers.add(mMap.addMarker(new MarkerOptions().position(marker).icon(getMarkerIcon(strColor)).snippet(crimeEvent.toString())));
-                                searchRadius.add(mMap.addCircle(new CircleOptions()
-                                        .center(marker)
-                                        .radius(15)
-                                        .strokeWidth(0.5f)
-                                        .fillColor(Color.parseColor(strColor))));
-                                count--;
-                                setVisibilityOfCurrentMarkerandCircle(crimeEvent.getTYPE());
-
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    List<Marker> list = new ArrayList<>(searchMarkers);
-                    list = sortListIntoBuckets(list);
-                    CrimeEventMarkerListAdapter adapter = new CrimeEventMarkerListAdapter(MapsActivity.this, list);
-                    lvCrimeEventsSlideUp.setAdapter(adapter);
-                    searchMarkers.add(mMap.addMarker(new MarkerOptions().position(latLng).title(location)));
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+                LatLng latLng = getSearchResultLocation();
+                if(latLng == null) {
+                    return false;
                 }
+                generateCrimeEventMarkers(latLng, searchMarkers,searchRadius);
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+                createCrimeEventSlideUp(searchMarkers);
                 return true;
             }
 
@@ -512,6 +480,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                             mMap.addMarker(new MarkerOptions().position(latLng));
                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                            mLastLocation = location;
                         }
                     }
                 });
@@ -549,8 +518,65 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private class readAllCrimeDataTask extends AsyncTask<Void, Void, List<CrimeEventMarker>> {
 
         protected void onPostExecute(List<CrimeEventMarker> result) {
-            //TODO: maybe we can get current location and plot crime points for current location
 
+            LocationCallback mLocationCallback = new LocationCallback() {
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+                    try{
+                        List<Location> locationList = locationResult.getLocations();
+                        if (locationList.size() > 0) {
+                            //The last location in the list is the newest
+                            Location location = locationList.get(locationList.size() - 1);
+                            Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
+                            if (LatLongDistance.distance(location.getLatitude(), mLastLocation.getLongitude(), location.getLongitude(), mLastLocation.getLongitude()) < 75) {
+                                return;
+                            }else {
+                                mLastLocation = location;
+                            }
+                            if (mCurrLocationMarker != null) {
+                                mCurrLocationMarker.remove();
+                            }
+
+                            //Place current location marker
+                            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                            MarkerOptions markerOptions = new MarkerOptions();
+                            markerOptions.position(latLng);
+                            markerOptions.title("Current Position");
+                            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                            mCurrLocationMarker = mMap.addMarker(markerOptions);
+                            generateCrimeEventMarkers(latLng,currentLocationMarkers,currentLocationRadius);
+                            //move map camera (testing)
+                            //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));
+                        }
+                    }catch(Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+
+            //TODO: maybe we can get current location and plot crime points for current location
+            //fusedLocationClient
+            mLocationRequest = new LocationRequest();
+            mLocationRequest.setInterval(10000); // 10 seconds to test intervals
+            mLocationRequest.setFastestInterval(10000);
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (ContextCompat.checkSelfPermission(MapsActivity.this,
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    //Location Permission already granted
+                    fusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+                    mMap.setMyLocationEnabled(true);
+                } else {
+                    //Request Location Permission
+                    checkLocationPermission();
+                }
+            }
+            else {
+                fusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+                mMap.setMyLocationEnabled(true);
+            }
             Log.d(TAG, "Completed async task");
         }
 
@@ -591,16 +617,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     /**
      * We need to remove every marker from the map before we do a search.
      */
-    private void clearSearchMarkersAndCircles() {
-        for (Marker marker : searchMarkers) {
+    private void clearMarkersAndCircles(List<Marker> markers,List<Circle> radius) {
+        for (Marker marker : markers) {
 
             marker.remove();
         }
-        searchMarkers.clear();
-        for (Circle circle : searchRadius) {
+        markers.clear();
+        for (Circle circle : radius) {
             circle.remove();
         }
-        searchRadius.clear();
+        radius.clear();
     }
     public int getMarkerColor(String crimeType) {
         if (crimeType.contains("Break and Enter"))
@@ -654,86 +680,86 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public void setVisibilityOfCurrentMarkerandCircle(String crimeType) {
+    public void setVisibilityOfCurrentMarkerandCircle(String crimeType,List<Marker> markers,List<Circle> radius) {
         if (crimeType.contains("Break and Enter")) {
             if (filter.get("Break and Enter")!= null && filter.get("Break and Enter")) {
-                searchMarkers.get(searchMarkers.size()-1).setVisible(true);
-                searchRadius.get(searchRadius.size()-1).setVisible(true);
+                markers.get(markers.size()-1).setVisible(true);
+                radius.get(radius.size()-1).setVisible(true);
             }
             else {
-                searchMarkers.get(searchMarkers.size()-1).setVisible(false);
-                searchRadius.get(searchRadius.size()-1).setVisible(false);
+                markers.get(markers.size()-1).setVisible(false);
+                radius.get(radius.size()-1).setVisible(false);
                 Log.e("temp", "false");
             }
         }
         if (crimeType.contains("Mischief")) {
             if (filter.get("Mischief")!= null && filter.get("Mischief")) {
-                searchMarkers.get(searchMarkers.size()-1).setVisible(true);
-                searchRadius.get(searchRadius.size()-1).setVisible(true);
+                markers.get(markers.size()-1).setVisible(true);
+                radius.get(radius.size()-1).setVisible(true);
             }
             else {
-                searchMarkers.get(searchMarkers.size()-1).setVisible(false);
-                searchRadius.get(searchRadius.size()-1).setVisible(false);
+                markers.get(markers.size()-1).setVisible(false);
+                radius.get(radius.size()-1).setVisible(false);
             }
         }
         if (crimeType.contains("Offense")) {
             if (filter.get("Offense")!= null && filter.get("Offense")) {
-                searchMarkers.get(searchMarkers.size()-1).setVisible(true);
-                searchRadius.get(searchRadius.size()-1).setVisible(true);
+                markers.get(markers.size()-1).setVisible(true);
+                radius.get(radius.size()-1).setVisible(true);
             }
             else {
-                searchMarkers.get(searchMarkers.size()-1).setVisible(false);
-                searchRadius.get(searchRadius.size()-1).setVisible(false);
+                markers.get(markers.size()-1).setVisible(false);
+                radius.get(radius.size()-1).setVisible(false);
             }
         }
         if (crimeType.contains("Offense")) {
             if (filter.get("Offense")!= null && filter.get("Offense")) {
-                searchMarkers.get(searchMarkers.size()-1).setVisible(true);
-                searchRadius.get(searchRadius.size()-1).setVisible(true);
+                markers.get(markers.size()-1).setVisible(true);
+                radius.get(radius.size()-1).setVisible(true);
             }
             else {
-                searchMarkers.get(searchMarkers.size()-1).setVisible(false);
-                searchRadius.get(searchRadius.size()-1).setVisible(false);
+                markers.get(markers.size()-1).setVisible(false);
+                radius.get(radius.size()-1).setVisible(false);
             }
         }
         if (crimeType.contains("Theft from Vehicle")) {
             if (filter.get("Theft from Vehicle")!= null && filter.get("Theft from Vehicle")) {
-                searchMarkers.get(searchMarkers.size()-1).setVisible(true);
-                searchRadius.get(searchRadius.size()-1).setVisible(true);
+                markers.get(markers.size()-1).setVisible(true);
+                radius.get(radius.size()-1).setVisible(true);
             }
             else {
-                searchMarkers.get(searchMarkers.size()-1).setVisible(false);
-                searchRadius.get(searchRadius.size()-1).setVisible(false);
+                markers.get(markers.size()-1).setVisible(false);
+                radius.get(radius.size()-1).setVisible(false);
             }
         }
         if (crimeType.contains("Theft of Bicycle")) {
             if (filter.get("Theft Of Bicycle")!= null && filter.get("Theft Of Bicycle")) {
-                searchMarkers.get(searchMarkers.size()-1).setVisible(true);
-                searchRadius.get(searchRadius.size()-1).setVisible(true);
+                markers.get(markers.size()-1).setVisible(true);
+                radius.get(radius.size()-1).setVisible(true);
             }
             else {
-                searchMarkers.get(searchMarkers.size()-1).setVisible(false);
-                searchRadius.get(searchRadius.size()-1).setVisible(false);
+                markers.get(markers.size()-1).setVisible(false);
+                radius.get(radius.size()-1).setVisible(false);
             }
         }
         if (crimeType.contains("Theft of Vehicle")) {
             if (filter.get("Theft Of Vehicle")!= null && filter.get("Theft Of Vehicle")) {
-                searchMarkers.get(searchMarkers.size()-1).setVisible(true);
-                searchRadius.get(searchRadius.size()-1).setVisible(true);
+                markers.get(markers.size()-1).setVisible(true);
+                radius.get(radius.size()-1).setVisible(true);
             }
             else {
-                searchMarkers.get(searchMarkers.size()-1).setVisible(false);
-                searchRadius.get(searchRadius.size()-1).setVisible(false);
+                markers.get(markers.size()-1).setVisible(false);
+                radius.get(radius.size()-1).setVisible(false);
             }
         }
         if (crimeType.contains("Vehicle Collision")) {
             if (filter.get("Vehicle Collision")!= null && filter.get("Vehicle Collision")) {
-                searchMarkers.get(searchMarkers.size()-1).setVisible(true);
-                searchRadius.get(searchRadius.size()-1).setVisible(true);
+                markers.get(markers.size()-1).setVisible(true);
+                radius.get(radius.size()-1).setVisible(true);
             }
             else {
-                searchMarkers.get(searchMarkers.size()-1).setVisible(false);
-                searchRadius.get(searchRadius.size()-1).setVisible(false);
+                markers.get(markers.size()-1).setVisible(false);
+                radius.get(radius.size()-1).setVisible(false);
             }
         }
     }
@@ -763,4 +789,102 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         return returnList;
     }
+
+
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    private void checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                new AlertDialog.Builder(this)
+                        .setTitle("Location Permission Needed")
+                        .setMessage("This app needs the Location permission, please accept to use location functionality")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //Prompt the user once explanation has been shown
+                                ActivityCompat.requestPermissions(MapsActivity.this,
+                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                        MY_PERMISSIONS_REQUEST_LOCATION );
+                            }
+                        })
+                        .create()
+                        .show();
+
+
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION );
+            }
+        }
+    }
+
+
+    private LatLng getSearchResultLocation() {
+        String location = searchView.getQuery().toString();
+        List<Address> addressList = new ArrayList<>();
+        LatLng latLng = null;
+        if (!location.equals("")) {
+            Geocoder geocoder = new Geocoder(MapsActivity.this);
+            try {
+                addressList = geocoder.getFromLocationName(location, 1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (addressList.size() < 1) {
+                Toast.makeText(MapsActivity.this, "No search results.", Toast.LENGTH_LONG).show();
+            }
+//                    searchView.clearFocus();
+            Address address = addressList.get(0);
+            latLng = new LatLng(address.getLatitude(), address.getLongitude());
+        }
+        return latLng;
+    }
+    private boolean generateCrimeEventMarkers(LatLng latLng,List<Marker> markers,List<Circle> radius) {
+            int count = 50;
+            clearMarkersAndCircles(markers,radius);
+            for (CrimeEventMarker crimeEvent : crimeEventsList) {
+                if (count <= 0) {
+                    break;
+                }
+                try {
+                    double latitude = Double.parseDouble(crimeEvent.getX());
+                    double longitude = Double.parseDouble(crimeEvent.getY());
+                    if (LatLongDistance.distance(latitude, latLng.latitude, longitude, latLng.longitude) < 175) {
+                        LatLng marker = new LatLng(latitude, longitude);
+                        int color = getMarkerColor(crimeEvent.getTYPE());
+                        String strColor = String.format("#%08X", 0x27FFFFFF & color);
+                        markers.add(mMap.addMarker(new MarkerOptions().position(marker).icon(getMarkerIcon(strColor)).snippet(crimeEvent.toString())));
+                        radius.add(mMap.addCircle(new CircleOptions()
+                                .center(marker)
+                                .radius(15)
+                                .strokeWidth(0.5f)
+                                .fillColor(Color.parseColor(strColor))));
+                        count--;
+                        setVisibilityOfCurrentMarkerandCircle(crimeEvent.getTYPE(),markers,radius);
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            markers.add(mMap.addMarker(new MarkerOptions().position(latLng)));
+            return true;
+        }
+
+        private void createCrimeEventSlideUp(List<Marker> markers) {
+            List<Marker> list = new ArrayList<>(markers);
+            list = sortListIntoBuckets(list);
+            CrimeEventMarkerListAdapter adapter = new CrimeEventMarkerListAdapter(MapsActivity.this, list);
+            lvCrimeEventsSlideUp.setAdapter(adapter);
+        }
 }
