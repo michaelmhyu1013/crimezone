@@ -1,11 +1,14 @@
 package com.example.crimehelp;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CrimeEventMarker {
+public class CrimeEventMarker implements Parcelable {
     public static Set<String> crimeType =  new HashSet<>(Arrays.asList(
             "Break and Enter Residential/Other",
             "Homicide",
@@ -27,6 +30,32 @@ public class CrimeEventMarker {
     private String X;
     private String Y;
     private String YEAR;
+    private String NEIGHBOURHOOD;
+
+    protected CrimeEventMarker(Parcel in) {
+        DAY = in.readString();
+        HOUR = in.readString();
+        HUNDRED_BLOCK = in.readString();
+        TYPE = in.readString();
+        MINUTE = in.readString();
+        MONTH = in.readString();
+        X = in.readString();
+        Y = in.readString();
+        YEAR = in.readString();
+        NEIGHBOURHOOD = in.readString();
+    }
+
+    public static final Parcelable.Creator<CrimeEventMarker> CREATOR = new Parcelable.Creator<CrimeEventMarker>() {
+        @Override
+        public CrimeEventMarker createFromParcel(Parcel in) {
+            return new CrimeEventMarker(in);
+        }
+
+        @Override
+        public CrimeEventMarker[] newArray(int size) {
+            return new CrimeEventMarker[size];
+        }
+    };
 
     public String getNEIGHBOURHOOD() {
         return NEIGHBOURHOOD;
@@ -35,9 +64,6 @@ public class CrimeEventMarker {
     public void setNEIGHBOURHOOD(String nEIGHBOURHOOD) {
         this.NEIGHBOURHOOD = nEIGHBOURHOOD;
     }
-
-    private String NEIGHBOURHOOD;
-    //private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     public String getDAY() {
         return DAY;
@@ -128,5 +154,25 @@ public class CrimeEventMarker {
             e.printStackTrace();
         }
         return tmp;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(DAY);
+        parcel.writeString(HOUR);
+        parcel.writeString(HUNDRED_BLOCK);
+        parcel.writeString(TYPE);
+        parcel.writeString(MINUTE);
+        parcel.writeString(MONTH);
+        parcel.writeString(X);
+        parcel.writeString(Y);
+        parcel.writeString(YEAR);
+        parcel.writeString(NEIGHBOURHOOD);
+
     }
 }

@@ -69,7 +69,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap mMap;
     private SearchView searchView;
     private SupportMapFragment mapFragment;
-    private List<CrimeEventMarker> crimeEventsList;
+    private ArrayList<CrimeEventMarker> crimeEventsList;
     ListView lvCrimeEventsSlideUp;
     private BottomSheetBehavior sheetBehavior;
     private FusedLocationProviderClient fusedLocationClient;
@@ -1121,9 +1121,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onStart() {
         super.onStart();
+        //stopService(new Intent(this,MyService.class));
         new readAllCrimeDataTask().execute();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Intent intent = new Intent(this, MyService.class);
+        //We can't pass in this becauase the data is too big
+//        Bundle bundle = new Bundle();
+//        bundle.putParcelableArrayList("crimeEventsList", (ArrayList<CrimeEventMarker>)crimeEventsList);
+//        intent.putExtras(bundle);
+        startService(intent);
+        //bindService(new Intent(MapsActivity.this, MyService.class), 2, Context.BIND_AUTO_CREATE);
+    }
     private class readAllCrimeDataTask extends AsyncTask<Void, Void, List<CrimeEventMarker>> {
 
         protected void onPostExecute(List<CrimeEventMarker> result) {
@@ -1498,4 +1510,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             CrimeEventMarkerListAdapter adapter = new CrimeEventMarkerListAdapter(MapsActivity.this, list);
             lvCrimeEventsSlideUp.setAdapter(adapter);
         }
+
+
 }
