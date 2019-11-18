@@ -3,6 +3,7 @@ package com.example.crimehelp;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
@@ -13,12 +14,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -68,6 +71,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final String TAG = "MainActivity";
     private GoogleMap mMap;
     private SearchView searchView;
+    private Spinner etMaxRadius;
+    private Spinner etMaxItems;
     private SupportMapFragment mapFragment;
     private List<CrimeEventMarker> crimeEventsList;
     ListView lvCrimeEventsSlideUp;
@@ -82,6 +87,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private List<Circle> searchRadius;
     private DrawerLayout dl;
     private ActionBarDrawerToggle abdt;
+    private SharedPreferences sp;
     public HashMap<String,Boolean> filter;
     private Switch breakAndEnter;
     private Switch mischief;
@@ -92,15 +98,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Switch theftOfBicycle;
     private Switch vehicleCollision;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        sp = getSharedPreferences("SavedValues", MODE_PRIVATE);
+
         crimeEventsList = new ArrayList<>();
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        mapFragment.setRetainInstance(true);
         searchMarkers = new ArrayList<>();
         searchRadius = new ArrayList<>();
         currentLocationMarkers = new ArrayList<>();
@@ -1056,10 +1065,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-
+        final LayoutInflater inflater = getLayoutInflater();
+        final View settingsView = inflater.inflate(R.layout.activity_settings, null);
         searchView = findViewById(R.id.sv_location);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        etMaxItems = settingsView.findViewById(R.id.edit_max_marker_count);
+        etMaxRadius = settingsView.findViewById(R.id.edit_max_radius);
 
+        sp = getSharedPreferences("Settings", 0);
+
+        final int maxItems = sp.getInt("items", 50);
+        final int maxRadius = sp.getInt("radius", 175);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 LatLng latLng = getSearchResultLocation();
