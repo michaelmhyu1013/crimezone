@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CrimeHelp</string>
+    <string name="app_name">CrimeZone</string>
     <string name="title_activity_maps">CrimeZone</string>
     <string name="Settings">Search Settings</string>
     <string name="alert_in_km">Radius of Alert in Kilometers</string>
