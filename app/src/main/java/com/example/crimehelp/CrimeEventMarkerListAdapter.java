@@ -2,6 +2,7 @@ package com.example.crimehelp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +42,10 @@ public class CrimeEventMarkerListAdapter extends ArrayAdapter<Marker> {
         View listViewItem = inflater.inflate(R.layout.bottom_sheet_crime_list_layout, null, true);
 
         TextView crimeEventType = listViewItem.findViewById(R.id.crimeEventType);
+        crimeEventType.setTextColor(Color.WHITE);
         TextView crimeEventTime = listViewItem.findViewById(R.id.crimeEventTime);
+        crimeEventTime.setTextColor(Color.WHITE);
+
         try {
             Marker crimeEvent = crimeEventsList.get(position);
 

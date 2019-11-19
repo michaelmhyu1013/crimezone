@@ -5,7 +5,7 @@
     android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#FFFFFF"
+    android:background="@color/colorPrimary"
     android:orientation="vertical"
     android:padding="16dp"
     app:behavior_hideable="false"
@@ -16,19 +16,21 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="350dp"
+        android:layout_height="300dp"
         android:layout_gravity="bottom"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="5"
             android:orientation="vertical">
 
             <SearchView
+                android:searchIcon="@drawable/magnifyingreal"
                 android:id="@+id/sv_location"
                 android:layout_width="match_parent"
+<!--                android:closeIcon="@drawable/close"-->
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="33dp"
                 android:iconifiedByDefault="false" />
@@ -36,6 +38,8 @@
             <ListView
                 android:id="@+id/search_list"
                 android:layout_width="match_parent"
+                android:divider="#FFFFFF"
+                android:dividerHeight="2px"
                 android:layout_height="wrap_content" />
 
             <!--        </ScrollView>-->

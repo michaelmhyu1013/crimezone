@@ -20,10 +20,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -399,6 +401,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         final LayoutInflater inflater = getLayoutInflater();
         final View settingsView = inflater.inflate(R.layout.activity_settings, null);
         searchView = findViewById(R.id.sv_location);
+        int id = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null,
+                null);
+        TextView textView = (TextView) searchView.findViewById(id);
+        textView.setTextColor(Color.WHITE);
         etMaxItems = settingsView.findViewById(R.id.edit_max_marker_count);
         etMaxRadius = settingsView.findViewById(R.id.edit_max_radius);
 
