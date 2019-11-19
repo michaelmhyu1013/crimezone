@@ -6,9 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.Icon;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -633,7 +631,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         else if (crimeType.contains("Theft of Vehicle"))
             return getResources().getDrawable(R.drawable.theftofvehicle, null);
         else if (crimeType.contains("Vehicle Collision"))
-            return getResources().getDrawable(R.drawable.vehiclecollision, null);
+            return getResources().getDrawable(R.drawable.vehiclecollision2, null);
         return getResources().getDrawable(R.drawable.breakandenter, null);
     }
 
@@ -891,7 +889,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         else if (crimeEvent.getTYPE().contains("Vehicle Collision")) {
                             markers.add(mMap.addMarker(new MarkerOptions().position(marker).
-                                    icon(BitmapDescriptorFactory.fromResource(R.drawable.vehiclecollision)).snippet(crimeEvent.toString())));
+                                    icon(BitmapDescriptorFactory.fromResource(R.drawable.vehiclecollision2)).snippet(crimeEvent.toString())));
                         }
 
                         radius.add(mMap.addCircle(new CircleOptions()
