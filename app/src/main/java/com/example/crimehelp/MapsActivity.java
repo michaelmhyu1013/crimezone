@@ -923,7 +923,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (marker != null)
                 {
                     setVisibilityTrue(marker, s);
-
+//
                 }
             }
         }
