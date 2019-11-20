@@ -138,25 +138,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         breakAndEnter = ((Switch) nav_view.getMenu().findItem(R.id.switchBreakandEnter).getActionView());
         breakAndEnter.setChecked(true);
-
         mischief = ((Switch) nav_view.getMenu().findItem(R.id.switchMischief).getActionView());
         mischief.setChecked(true);
-
         offense = ((Switch) nav_view.getMenu().findItem(R.id.switchOffense).getActionView());
         offense.setChecked(true);
-
         otherTheft = ((Switch) nav_view.getMenu().findItem(R.id.switchOtherTheft).getActionView());
         otherTheft.setChecked(true);
-
         theftFromVehicle = ((Switch) nav_view.getMenu().findItem(R.id.switchTheftFromVehicle).getActionView());
         theftFromVehicle.setChecked(true);
-
         theftOfVehicle = ((Switch) nav_view.getMenu().findItem(R.id.switchTheftOfVehicle).getActionView());
         theftOfVehicle.setChecked(true);
-
         theftOfBicycle = ((Switch) nav_view.getMenu().findItem(R.id.switchTheftOfBicycle).getActionView());
         theftOfBicycle.setChecked(true);
-
         vehicleCollision = ((Switch) nav_view.getMenu().findItem(R.id.switchVehicleCollision).getActionView());
         vehicleCollision.setChecked(true);
 
