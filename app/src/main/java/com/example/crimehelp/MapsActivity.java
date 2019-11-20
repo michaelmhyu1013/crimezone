@@ -1,6 +1,9 @@
 package com.example.crimehelp;
 
 import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,6 +36,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.preference.PreferenceManager;
@@ -117,6 +121,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        createNotificationChannel(this);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         numMarkers = Integer.parseInt(sharedPreferences.getString("MaxMarkers", "50"));
@@ -429,6 +434,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     generateCrimeEventMarkers(latLng, searchMarkers, searchRadius);
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+                    addNotification();
                     createCrimeEventSlideUp(searchMarkers);
                     return true;
                 } catch (Exception e) {
@@ -740,9 +746,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             startActivity(intent);
             readDataTask.cancel(true);
             return true;
-        }else if (abdt.onOptionsItemSelected(item)) {
+        } else if (abdt.onOptionsItemSelected(item)) {
             return true;
-        }else {
+        } else {
             return super.onOptionsItemSelected(item);
         }
 
@@ -894,5 +900,45 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } catch (NullPointerException e) {
             System.out.print("NullPointerException caught");
         }
+    }
+
+    public static final String NOTIFICATION_CHANNEL_ID = "NOTIFICATION_CHANNEL";
+
+    public static void createNotificationChannel(final Context context) {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "name";
+            String description = "description";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    private void addNotification() {
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+                        .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark) //set icon for notification
+                        .setContentTitle("CrimeZone") //set title of notification
+                        .setContentText("Crime activity has previously been shown in this area!")//this is notification message
+                        .setAutoCancel(true) // makes auto cancel of notification
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT); //set priority of notification
+
+
+//        Intent notificationIntent = new Intent(this, MapsActivity.class);
+//        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        //notification message will get at NotificationView
+//        notificationIntent.putExtra("message", "There are crimes in your area");
+//
+//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent,
+//                PendingIntent.FLAG_UPDATE_CURRENT);
+//        builder.setContentIntent(pendingIntent);
+
+        // Add as notification
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(0, builder.build());
     }
 }
