@@ -30,7 +30,6 @@
                 android:searchIcon="@drawable/magnifyingreal"
                 android:id="@+id/sv_location"
                 android:layout_width="match_parent"
-<!--                android:closeIcon="@drawable/close"-->
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="33dp"
                 android:iconifiedByDefault="false" />
