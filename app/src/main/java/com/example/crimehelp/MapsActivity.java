@@ -472,7 +472,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
-            mMap.setInfoWindowAdapter(new CrimeEventInfoWindowAdapter(getLayoutInflater()));
+            mMap.setInfoWindowAdapter(new CrimeEventInfoWindowAdapter(MapsActivity.this, getLayoutInflater()));
 //            mMap.setInfoWindowAdapter(new CrimeEventInfoWindowAdapter(getLayoutInflater(), this.getApplicationContext()));
         } else {
             Log.d(TAG, "Location permissions denied.");
@@ -618,26 +618,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         else if (crimeType.contains("Vehicle Collision"))
             return getResources().getColor(R.color.VehicleCollision);
         return Color.WHITE;
-    }
-
-    public Drawable getMarkerPicture(String crimeType) {
-        if (crimeType.contains("Break and Enter"))
-            return getResources().getDrawable(R.drawable.breakandenter, null);
-        else if (crimeType.contains("Mischief"))
-            return getResources().getDrawable(R.drawable.mischief, null);
-        else if (crimeType.contains("Offence Against a Person"))
-            return getResources().getDrawable(R.drawable.offense, null);
-        else if (crimeType.contains("Other Theft"))
-            return getResources().getDrawable(R.drawable.othertheft, null);
-        else if (crimeType.contains("Theft from Vehicle"))
-            return getResources().getDrawable(R.drawable.theftfromvehicle, null);
-        else if (crimeType.contains("Theft of Bicycle"))
-            return getResources().getDrawable(R.drawable.theftofbicycle, null);
-        else if (crimeType.contains("Theft of Vehicle"))
-            return getResources().getDrawable(R.drawable.theftofvehicle, null);
-        else if (crimeType.contains("Vehicle Collision"))
-            return getResources().getDrawable(R.drawable.vehiclecollision, null);
-        return getResources().getDrawable(R.drawable.breakandenter, null);
     }
 
     public BitmapDescriptor getMarkerIcon(String color) {
@@ -846,32 +826,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     int color = getMarkerColor(crimeEvent.getTYPE());
                     String strColor = String.format("#%08X", 0x27FFFFFF & color);
 
-                    if (crimeEvent.getTYPE().contains("Break and Enter")) {
-                        markers.add(mMap.addMarker(new MarkerOptions().position(marker).
-                                icon(BitmapDescriptorFactory.fromResource(R.drawable.breakandenter)).snippet(crimeEvent.toString())));
-                    } else if (crimeEvent.getTYPE().contains("Mischief")) {
-                        markers.add(mMap.addMarker(new MarkerOptions().position(marker).
-                                icon(BitmapDescriptorFactory.fromResource(R.drawable.mischief)).snippet(crimeEvent.toString())));
-                    } else if (crimeEvent.getTYPE().contains("Offence Against a Person")) {
-                        markers.add(mMap.addMarker(new MarkerOptions().position(marker).
-                                icon(BitmapDescriptorFactory.fromResource(R.drawable.offense)).snippet(crimeEvent.toString())));
-                    } else if (crimeEvent.getTYPE().contains("Other Theft")) {
-                        markers.add(mMap.addMarker(new MarkerOptions().position(marker).
-                                icon(BitmapDescriptorFactory.fromResource(R.drawable.othertheft)).snippet(crimeEvent.toString())));
-                    } else if (crimeEvent.getTYPE().contains("Theft from Vehicle")) {
-                        markers.add(mMap.addMarker(new MarkerOptions().position(marker).
-                                icon(BitmapDescriptorFactory.fromResource(R.drawable.theftfromvehicle)).snippet(crimeEvent.toString())));
-                    } else if (crimeEvent.getTYPE().contains("Theft of Bicycle")) {
-                        markers.add(mMap.addMarker(new MarkerOptions().position(marker).
-                                icon(BitmapDescriptorFactory.fromResource(R.drawable.theftofbicycle)).snippet(crimeEvent.toString())));
-                    } else if (crimeEvent.getTYPE().contains("Theft of Vehicle")) {
-                        markers.add(mMap.addMarker(new MarkerOptions().position(marker).
-                                icon(BitmapDescriptorFactory.fromResource(R.drawable.theftofvehicle)).snippet(crimeEvent.toString())));
-                    } else if (crimeEvent.getTYPE().contains("Vehicle Collision")) {
-                        markers.add(mMap.addMarker(new MarkerOptions().position(marker).
-                                icon(BitmapDescriptorFactory.fromResource(R.drawable.vehiclecollision)).snippet(crimeEvent.toString())));
-                    }
-
+                    markers.add(mMap.addMarker(new MarkerOptions().position(marker).icon(getMarkerIcon(strColor)).snippet(crimeEvent.toString())));
                     radius.add(mMap.addCircle(new CircleOptions()
                             .center(marker)
                             .radius(15)
