@@ -138,28 +138,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         breakAndEnter = ((Switch) nav_view.getMenu().findItem(R.id.switchBreakandEnter).getActionView());
         breakAndEnter.setChecked(true);
-        breakAndEnter.setTrackResource(R.color.Break);
+
         mischief = ((Switch) nav_view.getMenu().findItem(R.id.switchMischief).getActionView());
         mischief.setChecked(true);
-        mischief.setTrackResource(R.color.Mischief);
+
         offense = ((Switch) nav_view.getMenu().findItem(R.id.switchOffense).getActionView());
         offense.setChecked(true);
-        offense.setTrackResource(R.color.Offense);
+
         otherTheft = ((Switch) nav_view.getMenu().findItem(R.id.switchOtherTheft).getActionView());
         otherTheft.setChecked(true);
-        otherTheft.setTrackResource(R.color.OtherTheft);
+
         theftFromVehicle = ((Switch) nav_view.getMenu().findItem(R.id.switchTheftFromVehicle).getActionView());
         theftFromVehicle.setChecked(true);
-        theftFromVehicle.setTrackResource(R.color.TheftFromVehicle);
+
         theftOfVehicle = ((Switch) nav_view.getMenu().findItem(R.id.switchTheftOfVehicle).getActionView());
         theftOfVehicle.setChecked(true);
-        theftOfVehicle.setTrackResource(R.color.TheftOfVehicle);
+
         theftOfBicycle = ((Switch) nav_view.getMenu().findItem(R.id.switchTheftOfBicycle).getActionView());
         theftOfBicycle.setChecked(true);
-        theftOfBicycle.setTrackResource(R.color.TheftOfBicycle);
+
         vehicleCollision = ((Switch) nav_view.getMenu().findItem(R.id.switchVehicleCollision).getActionView());
         vehicleCollision.setChecked(true);
-        vehicleCollision.setTrackResource(R.color.VehicleCollision);
+
 
         breakAndEnter.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
