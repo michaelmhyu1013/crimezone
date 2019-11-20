@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#494B49</color>
+    <color name="colorPrimaryDark">#5F635F</color>
+    <color name="colorAccent">#2a52be</color>
     <color name="Break">#FFF407</color>
     <color name="Mischief">#DCAF40</color>
     <color name="Offense">#0707FF</color>
@@ -11,4 +11,5 @@
     <color name="TheftOfVehicle">#FFA07A</color>
     <color name="TheftOfBicycle">#E9967A</color>
     <color name="VehicleCollision">#3D4849</color>
+    <color name="AppWhite">#FFFFFF</color>
 </resources>
