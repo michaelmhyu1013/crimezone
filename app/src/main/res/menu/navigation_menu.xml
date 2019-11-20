@@ -50,17 +50,4 @@
         app:showAsAction="ifRoom"
         android:title= "@string/vehicle_collision">
     </item>
-    <item
-        android:id="@+id/edit_max_marker_count"
-        android:title="@string/max_number_of_markers"
-        android:entries="@array/max_counts"
-        app:actionViewClass="android.widget.Spinner"
-
-        app:showAsAction="always" />
-    <item
-        android:id="@+id/edit_max_radius"
-        android:title="@string/alert_in_km"
-        android:entries="@array/radii"
-        app:actionViewClass="android.widget.Spinner"
-        app:showAsAction="always" />
 </menu>
