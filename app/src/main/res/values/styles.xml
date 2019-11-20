@@ -15,4 +15,36 @@
        <item name="android:windowBackground">@drawable/splash</item>
     </style>
 
+    <style name="breakswitch" parent="@style/Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:colorControlActivated">#FFF407</item>
+        <item name="android:thumbTint">#FFF407</item>
+    </style>
+    <style name="mischiefswitch" parent="@style/Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:colorControlActivated">#DCAF40</item>
+        <item name="android:thumbTint">#DCAF40</item>
+    </style>
+    <style name="offenseswitch" parent="@style/Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:colorControlActivated">#0707FF</item>
+        <item name="android:thumbTint">#0707FF</item>
+    </style>
+    <style name="othertheftswitch" parent="@style/Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:colorControlActivated">#FFD607</item>
+        <item name="android:thumbTint">#FFD607</item>
+    </style>
+    <style name="theftfromvehicleswitch" parent="@style/Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:colorControlActivated">#FF8307</item>
+        <item name="android:thumbTint">#FF8307</item>
+    </style>
+    <style name="theftofbicycleswitch" parent="@style/Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:colorControlActivated">#E9967A</item>
+        <item name="android:thumbTint">#E9967A</item>
+    </style>
+    <style name="theftofvehicleswitch" parent="@style/Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:colorControlActivated">#FFA07A</item>
+        <item name="android:thumbTint">#FFA07A</item>
+    </style>
+    <style name="vehiclecollisionswitch" parent="@style/Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:colorControlActivated">#23E5EC</item>
+        <item name="android:thumbTint">#23E5EC</item>
+    </style>
 </resources>

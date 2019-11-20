@@ -167,6 +167,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         vehicleCollision = ((Switch) nav_view.getMenu().findItem(R.id.switchVehicleCollision).getActionView());
         vehicleCollision.setChecked(true);
 
+
         breakAndEnter.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -846,7 +847,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     markers.add(mMap.addMarker(new MarkerOptions().position(marker).icon(getMarkerIcon(strColor)).snippet(crimeEvent.toString())));
                     radius.add(mMap.addCircle(new CircleOptions()
                             .center(marker)
-                            .radius(15)
+                            .radius(25)
                             .strokeWidth(0.5f)
                             .fillColor(Color.parseColor(strColor))));
                     count--;

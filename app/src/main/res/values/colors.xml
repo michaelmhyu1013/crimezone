@@ -11,5 +11,6 @@
     <color name="TheftOfVehicle">#FFA07A</color>
     <color name="TheftOfBicycle">#E9967A</color>
     <color name="VehicleCollision">#3D4849</color>
+    <color name="VehicleCollisionBlue">#23E5EC</color>
     <color name="AppWhite">#FFFFFF</color>
 </resources>
