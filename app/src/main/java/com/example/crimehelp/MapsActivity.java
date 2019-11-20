@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -21,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
@@ -103,6 +101,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Switch theftOfVehicle;
     private Switch theftOfBicycle;
     private Switch vehicleCollision;
+    private readAllCrimeDataTask readDataTask;
 
 
     @Override
@@ -488,7 +487,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onStart() {
         super.onStart();
-        new readAllCrimeDataTask().execute();
+        readDataTask = new readAllCrimeDataTask();
+        readDataTask.execute();
     }
 
     @Override
@@ -738,6 +738,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (id == R.id.settings) {
             Intent intent = new Intent(MapsActivity.this, SettingsActivity.class);
             startActivity(intent);
+            readDataTask.cancel(true);
             return true;
         }else if (abdt.onOptionsItemSelected(item)) {
             return true;
