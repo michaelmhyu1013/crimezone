@@ -10,6 +10,6 @@
         android:defaultValue="50"
         android:entries="@array/max_counts"
         android:entryValues="@array/max_counts"
-        android:key="Max Markers"
+        android:key="MaxMarkers"
         android:title="Max Markers" />
 </PreferenceScreen>

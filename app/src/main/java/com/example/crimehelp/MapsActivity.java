@@ -3,6 +3,7 @@ package com.example.crimehelp;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -34,6 +35,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -68,7 +70,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "MainActivity";
     private GoogleMap mMap;
     private SearchView searchView;
@@ -89,6 +91,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DrawerLayout dl;
     private ActionBarDrawerToggle abdt;
     public HashMap<String, Boolean> filter;
+    private int numRadius;
+    private int numMarkers;
     private Switch breakAndEnter;
     private Switch mischief;
     private Switch offense;
@@ -100,11 +104,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        numMarkers = Integer.parseInt(sharedPreferences.getString("MaxMarkers", "50"));
+        numRadius = Integer.parseInt(sharedPreferences.getString("Radius", "175"));
         crimeEventsList = new ArrayList<>();
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -468,6 +483,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         new readAllCrimeDataTask().execute();
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        if (s.equals("Radius")) {
+            //setTextVisible(sharedPreferences.getBoolean("display_text",true));
+        } else if(s.equals("MaxMarkers")){
+
+        }
+    }
+
     private class readAllCrimeDataTask extends AsyncTask<Void, Void, List<CrimeEventMarker>> {
 
         protected void onPostExecute(List<CrimeEventMarker> result) {
@@ -483,7 +507,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             //The last location in the list is the newest
                             Location location = locationList.get(locationList.size() - 1);
                             Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
-                            if (LatLongDistance.distance(location.getLatitude(), mLastLocation.getLatitude(), location.getLongitude(), mLastLocation.getLongitude()) < 75) {
+                            if (LatLongDistance.distance(location.getLatitude(), mLastLocation.getLatitude(), location.getLongitude(), mLastLocation.getLongitude()) < numRadius) {
                                 return;
                             } else {
                                 mLastLocation = location;
@@ -823,7 +847,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private boolean generateCrimeEventMarkers(LatLng latLng, List<Marker> markers, List<Circle> radius) {
-        int count = 50;
+        int count = numMarkers;
         clearMarkersAndCircles(markers, radius);
         for (CrimeEventMarker crimeEvent : crimeEventsList) {
             if (count <= 0) {
@@ -832,7 +856,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             try {
                 double latitude = Double.parseDouble(crimeEvent.getX());
                 double longitude = Double.parseDouble(crimeEvent.getY());
-                if (LatLongDistance.distance(latitude, latLng.latitude, longitude, latLng.longitude) < 175) {
+                if (LatLongDistance.distance(latitude, latLng.latitude, longitude, latLng.longitude) < numRadius) {
                     LatLng marker = new LatLng(latitude, longitude);
                     int color = getMarkerColor(crimeEvent.getTYPE());
                     String strColor = String.format("#%08X", 0x27FFFFFF & color);
