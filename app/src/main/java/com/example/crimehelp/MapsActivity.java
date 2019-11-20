@@ -485,11 +485,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        if (s.equals("Radius")) {
-            //setTextVisible(sharedPreferences.getBoolean("display_text",true));
-        } else if(s.equals("MaxMarkers")){
-
-        }
     }
 
     private class readAllCrimeDataTask extends AsyncTask<Void, Void, List<CrimeEventMarker>> {
