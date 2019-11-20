@@ -845,7 +845,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     int color = getMarkerColor(crimeEvent.getTYPE());
                     String strColor = String.format("#%08X", 0x27FFFFFF & color);
 
-                    markers.add(mMap.addMarker(new MarkerOptions().position(marker).icon(getMarkerIcon(strColor)).snippet(crimeEvent.toString())));
+                    markers.add(mMap.addMarker(new MarkerOptions().position(marker).title("CrimeEvent").icon(getMarkerIcon(strColor)).snippet(crimeEvent.toString())));
                     radius.add(mMap.addCircle(new CircleOptions()
                             .center(marker)
                             .radius(25)
