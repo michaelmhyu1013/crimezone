@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:defaultValue="175"
+        android:entries="@array/radii"
+        android:entryValues="@array/radii"
+        android:key="Radius"
+        android:title="Max Radius" />
+    <ListPreference
+        android:defaultValue="50"
+        android:entries="@array/max_counts"
+        android:entryValues="@array/max_counts"
+        android:key="Max Markers"
+        android:title="Max Markers" />
+</PreferenceScreen>

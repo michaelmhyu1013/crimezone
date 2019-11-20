@@ -3,7 +3,6 @@ package com.example.crimehelp;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -15,7 +14,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -88,7 +88,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private List<Circle> searchRadius;
     private DrawerLayout dl;
     private ActionBarDrawerToggle abdt;
-    private SharedPreferences sp;
     public HashMap<String, Boolean> filter;
     private Switch breakAndEnter;
     private Switch mischief;
@@ -99,12 +98,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Switch theftOfBicycle;
     private Switch vehicleCollision;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        sp = getSharedPreferences("SavedValues", MODE_PRIVATE);
 
         crimeEventsList = new ArrayList<>();
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -396,17 +395,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        final LayoutInflater inflater = getLayoutInflater();
-        final View settingsView = inflater.inflate(R.layout.activity_settings, null);
         searchView = findViewById(R.id.sv_location);
-        etMaxItems = settingsView.findViewById(R.id.edit_max_marker_count);
-        etMaxRadius = settingsView.findViewById(R.id.edit_max_radius);
-
-        sp = getSharedPreferences("Settings", 0);
-
-        final int maxItems = sp.getInt("items", 50);
-        final int maxRadius = sp.getInt("radius", 175);
-
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -520,7 +509,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             };
 
-            //TODO: maybe we can get current location and plot crime points for current location
             //fusedLocationClient
             mLocationRequest = new LocationRequest();
             mLocationRequest.setInterval(10000); // 10 seconds to test intervals
@@ -573,11 +561,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-
-    public void openSettingsActivity(View v) {
-        Intent openSettings = new Intent(this, SettingsActivity.class);
-        startActivity(openSettings);
-    }
 
     /**
      * We need to remove every marker from the map before we do a search.
@@ -736,11 +719,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.settings_menu, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (abdt.onOptionsItemSelected(item)) {
+        int id = item.getItemId();
+        if (id == R.id.settings) {
+            Intent intent = new Intent(MapsActivity.this, SettingsActivity.class);
+            startActivity(intent);
             return true;
+        }else if (abdt.onOptionsItemSelected(item)) {
+            return true;
+        }else {
+            return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+
     }
 
     private List<Marker> sortListIntoBuckets(List<Marker> list) {
