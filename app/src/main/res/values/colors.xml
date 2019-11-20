@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#494B49</color>
     <color name="colorPrimaryDark">#5F635F</color>
-    <color name="colorAccent">#2a52be</color>
+    <color name="colorAccent">#00ff00</color>
     <color name="Break">#FFF407</color>
     <color name="Mischief">#DCAF40</color>
     <color name="Offense">#0707FF</color>

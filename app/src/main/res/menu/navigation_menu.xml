@@ -4,7 +4,8 @@
     <item
         android:id="@+id/switchBreakandEnter"
         app:actionViewClass = "android.widget.Switch"
-        android:title="@string/break_and_enter">
+        android:title="@string/break_and_enter"
+        >
     </item>
     <item
         android:id="@+id/switchMischief"

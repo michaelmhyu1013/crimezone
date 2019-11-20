@@ -138,20 +138,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         breakAndEnter = ((Switch) nav_view.getMenu().findItem(R.id.switchBreakandEnter).getActionView());
         breakAndEnter.setChecked(true);
+        breakAndEnter.setTrackResource(R.color.Break);
         mischief = ((Switch) nav_view.getMenu().findItem(R.id.switchMischief).getActionView());
         mischief.setChecked(true);
+        mischief.setTrackResource(R.color.Mischief);
         offense = ((Switch) nav_view.getMenu().findItem(R.id.switchOffense).getActionView());
         offense.setChecked(true);
+        offense.setTrackResource(R.color.Offense);
         otherTheft = ((Switch) nav_view.getMenu().findItem(R.id.switchOtherTheft).getActionView());
         otherTheft.setChecked(true);
+        otherTheft.setTrackResource(R.color.OtherTheft);
         theftFromVehicle = ((Switch) nav_view.getMenu().findItem(R.id.switchTheftFromVehicle).getActionView());
         theftFromVehicle.setChecked(true);
+        theftFromVehicle.setTrackResource(R.color.TheftFromVehicle);
         theftOfVehicle = ((Switch) nav_view.getMenu().findItem(R.id.switchTheftOfVehicle).getActionView());
         theftOfVehicle.setChecked(true);
+        theftOfVehicle.setTrackResource(R.color.TheftOfVehicle);
         theftOfBicycle = ((Switch) nav_view.getMenu().findItem(R.id.switchTheftOfBicycle).getActionView());
         theftOfBicycle.setChecked(true);
+        theftOfBicycle.setTrackResource(R.color.TheftOfBicycle);
         vehicleCollision = ((Switch) nav_view.getMenu().findItem(R.id.switchVehicleCollision).getActionView());
         vehicleCollision.setChecked(true);
+        vehicleCollision.setTrackResource(R.color.VehicleCollision);
 
         breakAndEnter.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -620,26 +628,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return Color.WHITE;
     }
 
-    public Drawable getMarkerPicture(String crimeType) {
-        if (crimeType.contains("Break and Enter"))
-            return getResources().getDrawable(R.drawable.breakandenter, null);
-        else if (crimeType.contains("Mischief"))
-            return getResources().getDrawable(R.drawable.mischief, null);
-        else if (crimeType.contains("Offence Against a Person"))
-            return getResources().getDrawable(R.drawable.offense, null);
-        else if (crimeType.contains("Other Theft"))
-            return getResources().getDrawable(R.drawable.othertheft, null);
-        else if (crimeType.contains("Theft from Vehicle"))
-            return getResources().getDrawable(R.drawable.theftfromvehicle, null);
-        else if (crimeType.contains("Theft of Bicycle"))
-            return getResources().getDrawable(R.drawable.theftofbicycle, null);
-        else if (crimeType.contains("Theft of Vehicle"))
-            return getResources().getDrawable(R.drawable.theftofvehicle, null);
-        else if (crimeType.contains("Vehicle Collision"))
-            return getResources().getDrawable(R.drawable.vehiclecollision, null);
-        return getResources().getDrawable(R.drawable.breakandenter, null);
-    }
-
     public BitmapDescriptor getMarkerIcon(String color) {
         float[] hsv = new float[3];
         Color.colorToHSV(Color.parseColor(color), hsv);
@@ -846,32 +834,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     int color = getMarkerColor(crimeEvent.getTYPE());
                     String strColor = String.format("#%08X", 0x27FFFFFF & color);
 
-                    if (crimeEvent.getTYPE().contains("Break and Enter")) {
-                        markers.add(mMap.addMarker(new MarkerOptions().position(marker).
-                                icon(BitmapDescriptorFactory.fromResource(R.drawable.breakandenter)).snippet(crimeEvent.toString())));
-                    } else if (crimeEvent.getTYPE().contains("Mischief")) {
-                        markers.add(mMap.addMarker(new MarkerOptions().position(marker).
-                                icon(BitmapDescriptorFactory.fromResource(R.drawable.mischief)).snippet(crimeEvent.toString())));
-                    } else if (crimeEvent.getTYPE().contains("Offence Against a Person")) {
-                        markers.add(mMap.addMarker(new MarkerOptions().position(marker).
-                                icon(BitmapDescriptorFactory.fromResource(R.drawable.offense)).snippet(crimeEvent.toString())));
-                    } else if (crimeEvent.getTYPE().contains("Other Theft")) {
-                        markers.add(mMap.addMarker(new MarkerOptions().position(marker).
-                                icon(BitmapDescriptorFactory.fromResource(R.drawable.othertheft)).snippet(crimeEvent.toString())));
-                    } else if (crimeEvent.getTYPE().contains("Theft from Vehicle")) {
-                        markers.add(mMap.addMarker(new MarkerOptions().position(marker).
-                                icon(BitmapDescriptorFactory.fromResource(R.drawable.theftfromvehicle)).snippet(crimeEvent.toString())));
-                    } else if (crimeEvent.getTYPE().contains("Theft of Bicycle")) {
-                        markers.add(mMap.addMarker(new MarkerOptions().position(marker).
-                                icon(BitmapDescriptorFactory.fromResource(R.drawable.theftofbicycle)).snippet(crimeEvent.toString())));
-                    } else if (crimeEvent.getTYPE().contains("Theft of Vehicle")) {
-                        markers.add(mMap.addMarker(new MarkerOptions().position(marker).
-                                icon(BitmapDescriptorFactory.fromResource(R.drawable.theftofvehicle)).snippet(crimeEvent.toString())));
-                    } else if (crimeEvent.getTYPE().contains("Vehicle Collision")) {
-                        markers.add(mMap.addMarker(new MarkerOptions().position(marker).
-                                icon(BitmapDescriptorFactory.fromResource(R.drawable.vehiclecollision)).snippet(crimeEvent.toString())));
-                    }
-
+                    markers.add(mMap.addMarker(new MarkerOptions().position(marker).icon(getMarkerIcon(strColor)).snippet(crimeEvent.toString())));
                     radius.add(mMap.addCircle(new CircleOptions()
                             .center(marker)
                             .radius(15)
