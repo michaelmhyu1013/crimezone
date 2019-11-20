@@ -1,7 +1,10 @@
 package com.example.crimehelp;
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,9 +17,12 @@ import java.util.GregorianCalendar;
 public class CrimeEventInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     private LayoutInflater inflater = null;
+    Context context;
 
-    public CrimeEventInfoWindowAdapter(LayoutInflater inflater) {
+
+    public CrimeEventInfoWindowAdapter(Context context, LayoutInflater inflater) {
         this.inflater = inflater;
+        this.context = context;
     }
 
     @Override
@@ -32,6 +38,9 @@ public class CrimeEventInfoWindowAdapter implements GoogleMap.InfoWindowAdapter 
             windowLayoutView.setLayoutParams(new LinearLayout.LayoutParams(500, LinearLayout.LayoutParams.WRAP_CONTENT));
             String[] dataString =marker.getSnippet().split("~");
 
+            ImageView infoWindowImage = windowLayoutView.findViewById(R.id.infoWindowCrimeImage);
+            infoWindowImage.setImageDrawable(generateDrawableId(dataString[0]));
+
             TextView tvCrimeType = windowLayoutView.findViewById(R.id.crimeTypeWindow);
             tvCrimeType.setText(dataString[0]);
             TextView tvCrimeHundredBlock = windowLayoutView.findViewById(R.id.hundredBlockWindow);
@@ -40,9 +49,36 @@ public class CrimeEventInfoWindowAdapter implements GoogleMap.InfoWindowAdapter 
             tvCrimeNeighbourhood.setText(dataString[2]);
             TextView tvCrimeDate = windowLayoutView.findViewById(R.id.dateWindow);
             tvCrimeDate.setText(dataString[3]);
+
         }catch(Exception e) {
             e.printStackTrace();
         }
         return windowLayoutView;
+    }
+
+    public Drawable generateDrawableId(String crimeType) {
+        if (crimeType.contains("Break and Enter")) {
+            return context.getResources().getDrawable(R.drawable.thiefblack, null);
+        } else if (crimeType.contains("Mischief")) {
+            return context.getResources().getDrawable(R.drawable.mischieficonblack, null);
+
+        } else if (crimeType.contains("Offence Against a Person")) {
+            return context.getResources().getDrawable(R.drawable.offenseblack, null);
+
+        } else if (crimeType.contains("Other Theft")) {
+            return context.getResources().getDrawable(R.drawable.theftblack, null);
+
+        } else if (crimeType.contains("Theft from Vehicle")) {
+            return context.getResources().getDrawable(R.drawable.theftfromvehicleiconblack, null);
+
+        } else if (crimeType.contains("Theft of Bicycle")){
+            return context.getResources().getDrawable(R.drawable.bicycleblack, null);
+
+        } else if (crimeType.contains("Theft of Vehicle")) {
+            return context.getResources().getDrawable(R.drawable.robbingcariconblack, null);
+
+        } else {
+            return context.getResources().getDrawable(R.drawable.vehiclecollisionblack, null);
+        }
     }
 }
