@@ -434,7 +434,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     generateCrimeEventMarkers(latLng, searchMarkers, searchRadius);
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
-                    addNotification();
+                    try{
+                        addNotification();
+                    }catch(Exception e) {
+                        e.printStackTrace();
+                    }
                     createCrimeEventSlideUp(searchMarkers);
                     return true;
                 } catch (Exception e) {
