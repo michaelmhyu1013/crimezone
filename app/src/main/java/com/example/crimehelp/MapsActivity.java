@@ -434,11 +434,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     generateCrimeEventMarkers(latLng, searchMarkers, searchRadius);
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
-                    try{
-                        addNotification();
-                    }catch(Exception e) {
-                        e.printStackTrace();
-                    }
                     createCrimeEventSlideUp(searchMarkers);
                     return true;
                 } catch (Exception e) {
@@ -870,6 +865,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
         markers.add(mMap.addMarker(new MarkerOptions().position(latLng)));
+        try{
+            addNotification();
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
         return true;
     }
 
